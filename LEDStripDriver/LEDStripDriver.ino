@@ -25,6 +25,7 @@
 #include <WiFi.h>
 
 #include "config.h"
+#include "animations.h"
 
 // Create webserver object
 AsyncWebServer webServer(SERVER_PORT);
@@ -246,38 +247,6 @@ void handleWrongMethod(AsyncWebServerRequest *request) {
 }
 
 /*  *  *  *  *  *  *  *  *  *  * Web Server *  *  *  *  *  *  *  *  * */
-
-/*  *  *  *  *  *  *  *  *  Animation Functions *  *   *  *  *  *  *  */
-
-/**
- * Animation table lookup entry
- */
-struct animationTableEntry {
-  int id;            // id for the animation
-  const char * name; // name for the animation
-  void (*handler)(); // handler function
-};
-
-/**
- * Lookup table to map each preset animation to its
- * handler function
- */
-static struct animationTableEntry animationTable[] = 
-{ 
-  { 1, "Cop Lights Flashing", &copLightsFlashing },
-  { 2, "Rainy Day",           &rainyDay },
-  { NULL }
-};
-
-void copLightsFlashing() {
-  
-}
-
-void rainyDay() {
-  
-}
-
-/*  *  *  *  *  *  *  *  *  Animation Functions *  *   *  *  *  *  *  */
 
 /*  *  *  *  *  *  *  *   *  Route Handlers *  *  *  *  *  *  *  *   */
 
