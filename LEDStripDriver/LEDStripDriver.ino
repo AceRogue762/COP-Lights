@@ -13,7 +13,8 @@
  *    with id animationId
  * 
  * ~ Configuration ~
- * Edit config.h to set NeoPixel, WiFi and web server parameters
+ * Edit config.h to set NeoPixel, WiFi and web server parameters.
+ * See animations.h for adding new animations.
  * 
  */
 
