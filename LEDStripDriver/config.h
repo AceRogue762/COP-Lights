@@ -21,7 +21,7 @@ bool CORS_ENABLED = true; // True value adds the Access-Control-Allow-Origin hea
 // NeoPixel strip settings
 const uint8_t LED_PIN    = 4;   // GPIO pin connected to LED data
 const uint8_t LED_COUNT  = 245; // Number of LEDs in the strip
-const uint8_t SATURATION = 100; // Maximum brightness
+const uint8_t SATURATION = 128; // Maximum brightness
 
 // Network settings
 #define SERVER_PORT 80  // Port for web application

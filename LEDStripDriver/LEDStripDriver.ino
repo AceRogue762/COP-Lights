@@ -30,10 +30,6 @@
 // Create webserver object
 AsyncWebServer webServer(SERVER_PORT);
 
-// Boolean flag to tell running animation tasks that
-// they should stop (i.e. when a new animation is selected).
-bool shouldStopAnimation = false;
-
 // ID of the currently playing animation
 unsigned short int currentAnimationId = 0;
 
@@ -358,6 +354,16 @@ void setCurrentAnimation(unsigned short int animationId) {
   // Tell any running animation tasks to stop
   shouldStopAnimation = true;
 
+  // Create new task to run the animation
+  xTaskCreate(
+    animationTable[animationId].handler,
+    animationTable[animationId].name,
+    1024, // Stack size (bytes)
+    NULL, // Parameter to pass
+    1,    // Task priority
+    NULL  // Task handle
+  );
+
   // Save to flash memory
   EEPROM.write(0, animationId);
   EEPROM.commit();
@@ -404,6 +410,9 @@ void setup() {
   #endif
   
   Serial.println("Booting");
+
+  // Initialize the NeoPixel interface
+  initLEDs();
 
   // Load last animation, if one was set
   initEEPROMAndGetLastAnimation();
