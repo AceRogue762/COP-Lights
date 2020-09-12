@@ -1,6 +1,10 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
+/**
+ * Configuration parameters used by the application
+ */
+
 // Debug mode (comment out to disable serial logging)
 #define DEBUG
 
@@ -9,9 +13,9 @@
 #define EEPROM_SIZE 2
 
 // WiFi settings
-const char * HOSTNAME     = "LEDStrip";     // Network device name
-const char * NETWORK_SSID = "YourSSID";     // Network SSID
-const char * NETWORK_PASS = "YourPassword"; // Network password
+const char * HOSTNAME     = "LEDStrip";   // Network device name
+const char * NETWORK_SSID = "Freas-WiFi"; // Network SSID
+const char * NETWORK_PASS = "dotl0402";   // Network password
 const uint8_t CONNECT_TIMEOUT = 5; // Timeout for connection (seconds)
 bool BLOCK_UNTIL_CONNECTED = true; // Whether to block execution until connected
 

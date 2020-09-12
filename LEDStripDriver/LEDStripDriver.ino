@@ -33,6 +33,8 @@ AsyncWebServer webServer(SERVER_PORT);
 // ID of the currently playing animation
 unsigned short int currentAnimationId = 0;
 
+// Task handler for animation
+TaskHandle_t currentTaskHandler = NULL;
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
 
@@ -332,43 +334,52 @@ void initEEPROMAndGetLastAnimation() {
 
   unsigned short int lastAnimationId = EEPROM.read(0);
 
-  if (lastAnimationId == 255) {
+  if (lastAnimationId == 255 || lastAnimationId == 0) {
     lastAnimationId = 0;
     Serial.println("No previous animation ID found");
 
     return;
   }
 
-  currentAnimationId = lastAnimationId;
-  
   Serial.print("Found saved animation ID: ");
   Serial.println(lastAnimationId);
+
+  setCurrentAnimation(lastAnimationId);
 }
 
 /*
- * Set the current animation and save to flash memory
+ * Set the current animation, create a task to run it and 
+ * save its id to flash memory
  */
 void setCurrentAnimation(unsigned short int animationId) {
+  if (animationId < 1 || animationId > animationCount) {
+    Serial.println("Invalid animation ID. Ignoring.");
+    return;
+  }
+  
   currentAnimationId = animationId;
-
-  // Tell any running animation tasks to stop
-  shouldStopAnimation = true;
-
-  // Create new task to run the animation
-  xTaskCreate(
-    animationTable[animationId].handler,
-    animationTable[animationId].name,
-    1024, // Stack size (bytes)
-    NULL, // Parameter to pass
-    1,    // Task priority
-    NULL  // Task handle
-  );
 
   // Save to flash memory
   EEPROM.write(0, animationId);
   EEPROM.commit();
 
-  // TODO: Turn off strip, start task to run animation
+  // End the current animation task
+  if(currentTaskHandler != NULL) {
+    vTaskDelete(currentTaskHandler);
+  }
+
+  // Clear the strip
+  setAllPixels(black);
+
+  // Create new task to run the animation
+  xTaskCreate(
+    animationTable[animationId-1].handler,
+    animationTable[animationId-1].name,
+    1024, // Stack size (bytes)
+    NULL, // Parameter to pass
+    1,    // Task priority (high)
+    &currentTaskHandler  // Task handle
+  );
 }
 
 /*  *  *  *  *  *  *  *  *  *  * EEPROM *  *  *  *  *  *  *  *  *  *  */
@@ -393,7 +404,7 @@ void startSPIFFS() {
     if (!f) {
         Serial.println("File open failed: index.html");
     } else {
-        f.println("Format complete");
+        f.println("No webpage here. Did you upload your application data?");
     }
   } else {
     // All good
@@ -414,13 +425,13 @@ void setup() {
   // Initialize the NeoPixel interface
   initLEDs();
 
-  // Load last animation, if one was set
-  initEEPROMAndGetLastAnimation();
-
   // Start up the filesystem, format if needed
   startSPIFFS();
+
+  // Load last animation, if one was set
+  initEEPROMAndGetLastAnimation();
   
-  // Blocks until connected to a network
+  // Connect to WiFi
   connectWifi();
 
   // Set up OTA updates

@@ -8,6 +8,8 @@
  * When adding a new animation, add 1 to animationCount, add an 
  * entry to animationTable and create a void function implementing 
  * the new animation in animationFunctions.h.
+ * 
+ * id values should range from 1 to animationCount.
  */
 
 #include "animationFunctions.h"

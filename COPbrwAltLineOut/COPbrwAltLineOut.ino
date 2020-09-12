@@ -8,7 +8,7 @@
 
 #include <NeoPixelBrightnessBus.h>
 
-const uint16_t PixelCount = 245;
+const uint16_t PixelCount = 55;
 const uint16_t PixelPin = 4;
 int PixelIndex = 0;
 
@@ -18,7 +18,7 @@ bool swapped = true;
 
 // Index for middle pixel
 int median = PixelCount / 2; //+ 20;
-int LineSize = 36; 
+int LineSize = 2; 
 
 #define colorSaturation 255
 
