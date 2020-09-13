@@ -14,8 +14,8 @@
 
 // WiFi settings
 const char * HOSTNAME     = "LEDStrip";   // Network device name
-const char * NETWORK_SSID = "Freas-WiFi"; // Network SSID
-const char * NETWORK_PASS = "dotl0402";   // Network password
+const char * NETWORK_SSID = "YourSSID"; // Network SSID
+const char * NETWORK_PASS = "YourPassword";   // Network password
 const uint8_t CONNECT_TIMEOUT = 5; // Timeout for connection (seconds)
 bool BLOCK_UNTIL_CONNECTED = true; // Whether to block execution until connected
 
