@@ -2,8 +2,8 @@
 #define ANIMATIONFUNCTIONHELPERS_H
 
 /**
- * Helper functions to initialize the strip and simplify common
- * animation tasks.
+ * Helper functions and objects to initialize the strip and 
+ * simplify common animation tasks. 
  */
 
 #include "Arduino.h"
@@ -15,12 +15,16 @@
 
 #include "config.h"
 
-// Create RGB colors used by animations
-RgbColor red(SATURATION, 0, 0);
-RgbColor blue(0, 0, SATURATION);
-RgbColor yellow(SATURATION, SATURATION, 0);
-RgbColor black(0, 0, 0);
-RgbColor white(SATURATION);
+// Create RGB colors to be used by animations
+RgbColor red    (SATURATION, 0, 0);
+RgbColor green  (0, SATURATION, 0);
+RgbColor blue   (0, 0, SATURATION);
+RgbColor pink   (SATURATION, 0, SATURATION);
+RgbColor yellow (SATURATION, SATURATION, 0);
+RgbColor orange (SATURATION, SATURATION/2, 0);
+RgbColor purple (SATURATION/2, 0, SATURATION);
+RgbColor white  (SATURATION);
+RgbColor black  (0);
 
 // Create the NeoPixelBus strip object
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(LED_COUNT, LED_PIN);

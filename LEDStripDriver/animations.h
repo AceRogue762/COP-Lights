@@ -5,19 +5,15 @@
  * Header file to define objects to wrap animation data and
  * handler functions.
  * 
- * When adding a new animation, add 1 to animationCount, add an 
- * entry to animationTable and create a void function implementing 
- * the new animation in animationFunctions.h.
+ * When adding a new animation, add an entry to animationTable 
+ * and create a void function implementing the new animation in 
+ * animationFunctions.h
  * 
  * id values should range from 1 to animationCount.
  */
 
 #include "animationFunctions.h"
 #include "Arduino.h"
-
-// Current number of animations. Increment by one when adding
-// an animation
-const int animationCount = 4;
 
 // Animation mapping table lookup entry
 typedef struct animationTableEntry {
@@ -28,7 +24,7 @@ typedef struct animationTableEntry {
 
 
 // Animation mapping table. Add new animations here.
-animationTableEntry animationTable[animationCount+1] =
+animationTableEntry animationTable[] =
 { 
   { 1, "Cop Lights Alternating", &copLightsAlternating },
   { 2, "Cop Lights Line Out",    &copLightsLineOut },

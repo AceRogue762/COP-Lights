@@ -353,7 +353,7 @@ void initEEPROMAndGetLastAnimation() {
  * save its id to flash memory
  */
 void setCurrentAnimation(unsigned short int animationId) {
-  if (animationId < 1 || animationId > animationCount) {
+  if (animationId < 1) {
     Serial.println("Invalid animation ID. Ignoring.");
     return;
   }
