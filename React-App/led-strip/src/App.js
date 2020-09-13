@@ -6,9 +6,6 @@
 
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import '../fonts/fonts.css';
-
-import CssBaseline from '@material-ui/core/CssBaseline';
 
 // Import components
 import MainAppBar from "./js/components/MainAppBar";
