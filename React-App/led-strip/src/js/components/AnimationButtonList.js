@@ -7,7 +7,15 @@
  */
 
 import React, { Component } from "react";
-import { Button, Typography, Grid } from '@material-ui/core';
+import { Button, ButtonGroup } from '@material-ui/core';
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+
+const WhiteTextTypography = withStyles({
+  root: {
+    color: "#FFFFFF"
+  }
+})(Typography);
 
 class AnimationButtonList extends Component {
   constructor() {
@@ -44,18 +52,21 @@ class AnimationButtonList extends Component {
   render() {
     return (
       <div>
-        <Grid container direction="column">
-          <Typography variant="title" color="inherit">
-            Animations
-          </Typography>
+        <WhiteTextTypography variant="h5" color="textSecondary" gutterBottom>
+          Animations
+        </WhiteTextTypography>
+        <ButtonGroup 
+          orientation="vertical" 
+          color="primary" 
+          variant="contained"
+          fullWidth
+          >
           {this.state.animations.map((animation) =>
-            <Grid item>
-              <Button variant="contained" color="primary" onClick={() => { this.selectAnimation(animation.id) }}>
-                {animation.name}
-              </Button>
-            </Grid>
+            <Button onClick={() => { this.selectAnimation(animation.id) }}>
+              {animation.name}
+            </Button>
           )}
-        </Grid>
+        </ButtonGroup>
       </div>
       
     );

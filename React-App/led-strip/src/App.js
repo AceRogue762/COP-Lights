@@ -6,6 +6,9 @@
 
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import '../fonts/fonts.css';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 // Import components
 import MainAppBar from "./js/components/MainAppBar";
@@ -17,7 +20,9 @@ class App extends Component {
     return (
       <div className="App">
         <MainAppBar />
-        <AnimationButtonList />
+        <div style={{marginTop: 80}}>
+            <AnimationButtonList />
+        </div>
       </div>
     );
   }
