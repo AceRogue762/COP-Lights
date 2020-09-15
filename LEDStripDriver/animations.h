@@ -29,7 +29,8 @@ animationTableEntry animationTable[] =
   { 1, "Cop Lights Alternating", &copLightsAlternating },
   { 2, "Cop Lights Line Out",    &copLightsLineOut },
   { 3, "Cop Lights Mix",         &copLightsMix },
-  { 4, "Rainy Day",              &rainyDay },
+  { 4, "MelloYello",             &melloYello },
+  { 5, "Rainy Day",              &rainyDay },
   { NULL }
 };
 

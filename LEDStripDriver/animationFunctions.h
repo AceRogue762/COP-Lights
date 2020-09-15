@@ -169,12 +169,15 @@ void copLightsMix(void * pvParameters) {
 void rainyDay(void * pvParameters) {
   (void) pvParameters;
 
+  RgbColor thisWhite = RgbColor(5);
+  
+
   int LightningFrequency = 20;
   int count = 0;
 
   // Startup animation
   for (int count = 0; count <= LED_COUNT; count++) {
-    strip.SetPixelColor(count, white);
+    strip.SetPixelColor(count, thisWhite);
     vTaskDelay(5 / portTICK_PERIOD_MS);
     strip.Show();
   }
@@ -190,7 +193,7 @@ void rainyDay(void * pvParameters) {
       strip.Show();
       vTaskDelay(50 / portTICK_PERIOD_MS);
       
-      setAllPixels(white); 
+      setAllPixels(thisWhite); 
     }
   
     if (count % LightningFrequency * 2 == 0) {
@@ -213,7 +216,7 @@ void rainyDay(void * pvParameters) {
       strip.Show();
       vTaskDelay(50 / portTICK_PERIOD_MS);
       
-      setAllPixels(white); 
+      setAllPixels(thisWhite); 
   
       count = 0;
     }
@@ -222,7 +225,7 @@ void rainyDay(void * pvParameters) {
     int Pixel2Index = random(LED_COUNT);
     int Pixel3Index = random(LED_COUNT);
     
-    for (int count = SATURATION; count >= 15; count--) {
+    for (int count = 40; count >= 15; count--) {
        strip.SetPixelColor(Pixel1Index, RgbColor(0, 0, count));
        strip.SetPixelColor(Pixel2Index, RgbColor(0, 0, count));
        strip.SetPixelColor(Pixel3Index, RgbColor(0, 0, count));
@@ -230,15 +233,67 @@ void rainyDay(void * pvParameters) {
        strip.Show(); 
     }
   
-    strip.SetPixelColor(Pixel1Index, white);
-    strip.SetPixelColor(Pixel2Index, white);
-    strip.SetPixelColor(Pixel3Index, white);
+    strip.SetPixelColor(Pixel1Index, thisWhite);
+    strip.SetPixelColor(Pixel2Index, thisWhite);
+    strip.SetPixelColor(Pixel3Index, thisWhite);
     
     strip.Show();
   
     count++;
+    vTaskDelay(500 / portTICK_PERIOD_MS);
   }
 }
 
+/**
+ * The super mellow green animation
+ */
+ void melloYello(void * pvParameters) {
+  (void) pvParameters;
 
+  int count = 0;
+  int loopdirection = 0;
+
+  RgbColor thisGreen(0, 15, 0);
+
+  // Startup animation
+  for (int count = 0; count <= LED_COUNT; count++) {
+    strip.SetPixelColor(count, thisGreen);
+    delay(5);
+    strip.Show();
+  }
+
+  while (true) {
+    if (count >= LED_COUNT) 
+      loopdirection = 1;
+    else if (count <= 0 && loopdirection == 1)
+      loopdirection = 0;
+
+    strip.SetPixelColor(count, black);
+    
+    if (loopdirection == 0) {
+       int brightness = 25;
+       
+       for(int i = count; i >= count - 25; i--) {
+         strip.SetPixelColor(i, RgbColor (brightness, brightness, 0));
+         brightness--;
+       } 
+       
+        strip.SetPixelColor(count - 25, thisGreen);
+        count++;
+     } else {
+       int brightness = 25;
+       
+       for(int i = count; i <= count + 25; i++) {
+         strip.SetPixelColor(i, RgbColor (brightness, brightness, 0));
+         brightness--;
+       } 
+       
+        strip.SetPixelColor(count + 25, thisGreen);
+        count--;
+     }
+      
+      strip.Show();
+      delay(25);
+    }
+ }
 #endif
