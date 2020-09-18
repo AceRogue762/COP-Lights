@@ -168,6 +168,7 @@ static struct endpointTableEntry endpointTable[] =
   { "/status",            HTTP_GET, &handleGetStatus       },
   { "/power/on",          HTTP_GET, &handlePowerOn         },
   { "/power/off",         HTTP_GET, &handlePowerOff        },
+  { "/power/toggle",      HTTP_GET, &handlePowerToggle     },
   { "/animations/select", HTTP_GET, &handleSelectAnimation },
   { "/animations/get",    HTTP_GET, &handleGetAnimations   },
   { NULL }
@@ -342,6 +343,17 @@ void handlePowerOff(AsyncWebServerRequest *request) {
 }
 
 /**
+ * API endpoint to toggle power
+ */
+void handlePowerToggle(AsyncWebServerRequest *request) {
+  if (currentStatus.powerOn) {
+    handlePowerOff(request);
+  } else {
+    handlePowerOn(request);
+  }
+}
+
+/**
  * API endpoint to select an animation
  */
 void handleSelectAnimation(AsyncWebServerRequest *request) {
@@ -430,6 +442,7 @@ void initEEPROMAndGetLastAnimation() {
   Serial.print("Found saved animation ID: ");
   Serial.println(lastAnimationId);
 
+  currentStatus.powerOn = true;
   setCurrentAnimation(lastAnimationId);
 }
 
