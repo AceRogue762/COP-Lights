@@ -476,10 +476,13 @@ void setCurrentAnimation(unsigned short int animationId) {
   EEPROM.write(0, animationId);
   EEPROM.commit();
 
+  // Stop here if powered off
+  if (! currentStatus.powerOn)
+    return;
+
   // End the current animation task
-  if(currentTaskHandler != NULL) {
+  if (currentTaskHandler != NULL)
     vTaskDelete(currentTaskHandler);
-  }
 
   // Clear the strip
   setAllPixels(black);
