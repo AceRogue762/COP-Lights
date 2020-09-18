@@ -2,17 +2,17 @@
   "name": "led-strip",
   "version": "1.0.0",
   "description": "",
-  "proxy": "http://192.168.1.25",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production && cp -r dist/* ../../LEDStripDriver/data/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "file-loader": "^6.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

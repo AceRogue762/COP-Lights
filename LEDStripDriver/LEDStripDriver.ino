@@ -30,11 +30,46 @@
 // Create webserver object
 AsyncWebServer webServer(SERVER_PORT);
 
-// ID of the currently playing animation
-unsigned short int currentAnimationId = 0;
-
 // Task handler for animation
 TaskHandle_t currentTaskHandler = NULL;
+
+/*  *  *  *  *  *  *  *  *  * System Status *  *  *  *  *  *  *  */
+
+/**
+ * Struct to hold current system status
+ */
+struct systemStatus {
+  bool powerOn; // whether the LED strip is powered on
+  unsigned short int selectedAnimationId; // id of the the currently selected animation
+};
+
+// Current system status
+systemStatus currentStatus = {
+  false, 0
+};
+
+/**
+ * Function to set status
+ */
+void setSystemStatus(bool powerOn, int selectedAnimationId) {
+  currentStatus.powerOn = powerOn;
+  currentStatus.selectedAnimationId = selectedAnimationId;
+}
+
+/**
+ * Function to return the current status as a JSON string
+ */
+String getSystemStatus() {
+  String message = "{\"status\": {";
+    message += "\"powerOn\": " + String(currentStatus.powerOn) + ", ";
+    message += "\"selectedAnimationId\": " + String(currentStatus.selectedAnimationId);
+  message += "}}";
+
+  return message;
+}
+
+/*  *  *  *  *  *  *  *  *  * System Status *  *  *  *  *   *  *  */
+
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
 
@@ -129,9 +164,13 @@ struct endpointTableEntry {
  */
 static struct endpointTableEntry endpointTable[] = 
 { 
-  { "/",                  HTTP_GET, &handleRoot            },
-  { "/animations/select", HTTP_GET, &handleSelectAnimation },
-  { "/animations/get",    HTTP_GET, &handleGetAnimations   },
+  { "/",                      HTTP_GET, &handleRoot            },
+  { "/api/status",            HTTP_GET, &handleGetStatus       },
+  { "/api/power/on",          HTTP_GET, &handlePowerOn         },
+  { "/api/power/off",         HTTP_GET, &handlePowerOff        },
+  { "/api/power/toggle",      HTTP_GET, &handlePowerToggle     },
+  { "/api/animations/select", HTTP_GET, &handleSelectAnimation },
+  { "/api/animations/get",    HTTP_GET, &handleGetAnimations   },
   { NULL }
 };
 
@@ -256,6 +295,79 @@ void handleRoot(AsyncWebServerRequest *request) {
 }
 
 /**
+ * API endpoint to get current status
+ */
+void handleGetStatus(AsyncWebServerRequest *request) {
+  request -> send(200, "text/json", getSystemStatus());
+}
+
+/**
+ * API endpoint to power on the LED strip
+ */
+void handlePowerOn(AsyncWebServerRequest *request) {
+  // Ignore if already on
+  if (currentStatus.powerOn) {
+    request -> send(200, "text/json", getSystemStatus());
+    return;
+  }
+
+  // Power on
+  currentStatus.powerOn = true;
+
+  // Restart animation
+  int animationId = currentStatus.selectedAnimationId;
+
+  if (animationId > 0) {
+    xTaskCreate(
+      animationTable[animationId-1].handler,
+      animationTable[animationId-1].name,
+      1024, // Stack size (bytes)
+      NULL, // Parameter to pass
+      1,    // Task priority (high)
+      &currentTaskHandler  // Task handle
+    );
+  }
+
+  // Send the response
+  request -> send(200, "text/json", getSystemStatus());
+}
+
+/**
+ * API endpoint to power off the LED strip
+ */
+void handlePowerOff(AsyncWebServerRequest *request) {
+  // Ignore if already off
+  if (! currentStatus.powerOn) {
+    request -> send(200, "text/json", getSystemStatus());
+    return;
+  }
+  
+  // End the current animation task
+  currentStatus.powerOn = false;
+  if(currentTaskHandler != NULL) {
+    vTaskDelete(currentTaskHandler);
+    currentTaskHandler = NULL;
+  }
+
+  // Black out all pixels
+  setAllPixels(black);
+
+  // Send the response
+  request -> send(200, "text/json", getSystemStatus());
+}
+
+/**
+ * API endpoint to toggle power
+ */
+void handlePowerToggle(AsyncWebServerRequest *request) {
+  if (currentStatus.powerOn) {
+    handlePowerOff(request);
+  } else {
+    handlePowerOn(request);
+  }
+}
+
+/**
  * API endpoint to select an animation
  */
 void handleSelectAnimation(AsyncWebServerRequest *request) {
@@ -274,7 +386,7 @@ void handleSelectAnimation(AsyncWebServerRequest *request) {
       for ( ; thisAnimationEntry -> id != NULL ; thisAnimationEntry++ ) {
         if ( animationId == thisAnimationEntry -> id ) {
           // Valid animation
-          if (animationId != currentAnimationId)
+          if (animationId != currentStatus.selectedAnimationId)
             setCurrentAnimation(animationId);
           
           request -> send(
@@ -344,6 +456,7 @@ void initEEPROMAndGetLastAnimation() {
   Serial.print("Found saved animation ID: ");
   Serial.println(lastAnimationId);
 
+  currentStatus.powerOn = true;
   setCurrentAnimation(lastAnimationId);
 }
 
@@ -357,16 +470,19 @@ void setCurrentAnimation(unsigned short int animationId) {
     return;
   }
   
-  currentAnimationId = animationId;
+  currentStatus.selectedAnimationId = animationId;
 
   // Save to flash memory
   EEPROM.write(0, animationId);
   EEPROM.commit();
 
+  // Stop here if powered off
+  if (! currentStatus.powerOn)
+    return;
+
   // End the current animation task
-  if(currentTaskHandler != NULL) {
+  if (currentTaskHandler != NULL)
     vTaskDelete(currentTaskHandler);
-  }
 
   // Clear the strip
   setAllPixels(black);
