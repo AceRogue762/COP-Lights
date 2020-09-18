@@ -311,9 +311,22 @@ void handlePowerOn(AsyncWebServerRequest *request) {
     return;
   }
 
-  // Start the current animation task
+  // Power on
   currentStatus.powerOn = true;
-  setCurrentAnimation(currentStatus.selectedAnimationId);
+
+  // Restart animation
+  int animationId = currentStatus.selectedAnimationId;
+
+  if (animationId > 0) {
+    xTaskCreate(
+      animationTable[animationId-1].handler,
+      animationTable[animationId-1].name,
+      1024, // Stack size (bytes)
+      NULL, // Parameter to pass
+      1,    // Task priority (high)
+      &currentTaskHandler  // Task handle
+    );
+  }
 
   // Send the response
   request -> send(200, "text/json", getSystemStatus());
@@ -333,6 +346,7 @@ void handlePowerOff(AsyncWebServerRequest *request) {
   currentStatus.powerOn = false;
   if(currentTaskHandler != NULL) {
     vTaskDelete(currentTaskHandler);
+    currentTaskHandler = NULL;
   }
 
   // Black out all pixels
