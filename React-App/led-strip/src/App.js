@@ -17,7 +17,7 @@ class App extends Component {
     return (
       <div className="App">
         <MainAppBar />
-        <div style={{marginTop: 80}}>
+        <div style={{marginTop: 20}}>
             <AnimationButtonList />
         </div>
       </div>
