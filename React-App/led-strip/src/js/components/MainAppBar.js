@@ -29,6 +29,17 @@ class MainAppBar extends Component {
     };
   }
 
+  // Fetch current power status
+  componentDidMount() {
+    fetch('/api/status')
+      .then((response) => response.json())
+      .then((data) => 
+        this.setState({
+          power: data.status.powerOn
+        })
+      );
+  }
+
   // Send GET request to API to toggle power to the LED strip
   togglePower() {
     fetch('/api/power/toggle')
@@ -38,6 +49,25 @@ class MainAppBar extends Component {
           power: data.status.powerOn
         })
       );
+  }
+
+  // Determine the current power button color based on state
+  buttonColor() {
+    let color;
+
+    switch(this.state.power) {
+      case 0:
+        color = "red";
+        break;
+      case 1:
+        color = "green"
+        break;
+      default:
+        color = "red";
+        break;
+    }
+
+    return color;
   }
 
   render() {
@@ -51,7 +81,7 @@ class MainAppBar extends Component {
                   LED Strip Controls
                 </Typography>
                 <IconButton className={classes.powerButton} onClick={() => { this.togglePower() }}>
-                  <PowerSettingsNewIcon color="secondary"/>
+                  <PowerSettingsNewIcon style={{fill: this.buttonColor()}}/>
                 </IconButton>
             </Toolbar>
         </AppBar>
