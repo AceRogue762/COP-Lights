@@ -279,8 +279,8 @@ void rainyDay(void * pvParameters) {
          brightness--;
        } 
        
-        strip.SetPixelColor(trailEnd, thisGreen);
-        count++;
+       strip.SetPixelColor(trailEnd, thisGreen);
+       count++;
      } else {
        int brightness = 25;
        int trailEnd = constrain(count + 25, START_LED, LED_COUNT);
@@ -290,8 +290,8 @@ void rainyDay(void * pvParameters) {
          brightness--;
        } 
        
-        strip.SetPixelColor(trailEnd, thisGreen);
-        count--;
+       strip.SetPixelColor(trailEnd, thisGreen);
+       count--;
      }
       
       strip.Show();
