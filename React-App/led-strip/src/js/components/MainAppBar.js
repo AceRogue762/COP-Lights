@@ -23,6 +23,21 @@ const styles = theme => ({
 class MainAppBar extends Component {
   constructor() {
     super();
+
+    this.state = {
+      power: 0, 
+    };
+  }
+
+  // Send GET request to API to toggle power to the LED strip
+  togglePower() {
+    fetch('/api/power/toggle')
+      .then((response) => response.json())
+      .then((data) => 
+        this.setState({
+          power: data.status.powerOn
+        })
+      );
   }
 
   render() {
@@ -35,7 +50,7 @@ class MainAppBar extends Component {
                 <Typography variant="title" color="inherit" className={classes.powerButton}>
                   LED Strip Controls
                 </Typography>
-                <IconButton className={classes.powerButton}>
+                <IconButton className={classes.powerButton} onClick={() => { this.togglePower() }}>
                   <PowerSettingsNewIcon color="secondary"/>
                 </IconButton>
             </Toolbar>

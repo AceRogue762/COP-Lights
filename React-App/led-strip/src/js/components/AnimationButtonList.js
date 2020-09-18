@@ -29,7 +29,7 @@ class AnimationButtonList extends Component {
 
   // Fetch all available animations after the component loads
   componentDidMount() {
-    fetch('/animations/get')
+    fetch('/api/animations/get')
       .then((response) => response.json())
       .then((data) => 
         this.setState({
@@ -40,7 +40,7 @@ class AnimationButtonList extends Component {
 
   // Send GET request to API to start playing an animation
   selectAnimation(id) {
-    fetch('/animations/select?id=' + id)
+    fetch('/api/animations/select?id=' + id)
       .then((response) => response.json())
       .then((data) => 
         this.setState({
