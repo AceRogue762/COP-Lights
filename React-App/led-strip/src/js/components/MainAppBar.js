@@ -84,7 +84,7 @@ class MainAppBar extends Component {
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>
-            <Typography edge="start" variant="title" color="inherit" className={classes.title}>
+            <Typography edge="start" variant="subtitle1" color="inherit" className={classes.title}>
               LED Strip Controls
             </Typography>
             <IconButton onClick={() => { this.togglePower() }}>
