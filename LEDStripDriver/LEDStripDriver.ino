@@ -164,13 +164,13 @@ struct endpointTableEntry {
  */
 static struct endpointTableEntry endpointTable[] = 
 { 
-  { "/",                  HTTP_GET, &handleRoot            },
-  { "/status",            HTTP_GET, &handleGetStatus       },
-  { "/power/on",          HTTP_GET, &handlePowerOn         },
-  { "/power/off",         HTTP_GET, &handlePowerOff        },
-  { "/power/toggle",      HTTP_GET, &handlePowerToggle     },
-  { "/animations/select", HTTP_GET, &handleSelectAnimation },
-  { "/animations/get",    HTTP_GET, &handleGetAnimations   },
+  { "/",                      HTTP_GET, &handleRoot            },
+  { "/api/status",            HTTP_GET, &handleGetStatus       },
+  { "/api/power/on",          HTTP_GET, &handlePowerOn         },
+  { "/api/power/off",         HTTP_GET, &handlePowerOff        },
+  { "/api/power/toggle",      HTTP_GET, &handlePowerToggle     },
+  { "/api/animations/select", HTTP_GET, &handleSelectAnimation },
+  { "/api/animations/get",    HTTP_GET, &handleGetAnimations   },
   { NULL }
 };
 
