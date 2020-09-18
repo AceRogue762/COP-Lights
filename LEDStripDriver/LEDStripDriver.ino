@@ -63,7 +63,7 @@ String getSystemStatus() {
   String message = "{\"status\": {";
     message += "\"powerOn\": " + String(currentStatus.powerOn) + ", ";
     message += "\"selectedAnimationId\": " + String(currentStatus.selectedAnimationId);
-  message += "}";
+  message += "}}";
 
   return message;
 }
