@@ -41,7 +41,7 @@ void initLEDs() {
  * Use this function to set all pixels to a color
  */
 void setAllPixels(RgbColor color) {
-  for (int count = 0; count <= LED_COUNT; count++) {
+  for (int count = START_LED; count <= LED_COUNT; count++) {
     strip.SetPixelColor(count, color); 
   }   
   
@@ -102,7 +102,7 @@ void BlendAnimUpdate(const AnimationParam& param) {
         param.progress);
 
     // apply the color to the strip
-    for (uint16_t pixel = 0; pixel < LED_COUNT; pixel++)
+    for (uint16_t pixel = START_LED; pixel < LED_COUNT; pixel++)
     {
         strip.SetPixelColor(pixel, updatedColor);
     }
