@@ -24,11 +24,11 @@ void copLightsAlternating(void * pvParameters) {
   bool swapped = true;
   
   // Index for middle pixel
-  int median = LED_COUNT / 2;
+  int median = (LED_COUNT + START_LED) / 2;
 
   // Startup animation
   // Turn first half red
-  for (int count = 0; count <= median; count++) {
+  for (int count = START_LED; count <= median; count++) {
     strip.SetPixelColor(count, red);
     vTaskDelay(5 / portTICK_PERIOD_MS);
     strip.Show();
@@ -60,7 +60,7 @@ void copLightsAlternating(void * pvParameters) {
     vTaskDelay(200 / portTICK_PERIOD_MS);
     
     // Set first half of strip
-    for (int count = 0; count <= median; count++) {
+    for (int count = START_LED; count <= median; count++) {
       strip.SetPixelColor(count, firstColor);
     }
   
@@ -82,18 +82,18 @@ void copLightsLineOut(void * pvParameters) {
   (void) pvParameters;
 
   // Current pixel being changed
-  int pixelIndex = 0;
+  int pixelIndex = START_LED;
 
   // Whether to set red or blue first
   bool swapped = true;
   
   // Index for middle pixel
-  int median = LED_COUNT / 2;
+  int median = (LED_COUNT + START_LED) / 2;
   int lineSize = 36; 
 
   // Startup animation
   // Red Line Out
-  for (int count = 0; count <= median; count++) {
+  for (int count = START_LED; count <= median; count++) {
     strip.SetPixelColor(count, red);
     vTaskDelay(5 / portTICK_PERIOD_MS);
     strip.Show();
@@ -127,7 +127,7 @@ void copLightsLineOut(void * pvParameters) {
       }
      
       setAllPixels(black);
-      pixelIndex = 0;
+      pixelIndex = START_LED;
     }
     
     strip.SetPixelColor(pixelIndex, red);
@@ -173,10 +173,10 @@ void rainyDay(void * pvParameters) {
   
 
   int LightningFrequency = 20;
-  int count = 0;
+  int count = START_LED;
 
   // Startup animation
-  for (int count = 0; count <= LED_COUNT; count++) {
+  for (int count = START_LED; count <= LED_COUNT; count++) {
     strip.SetPixelColor(count, thisWhite);
     vTaskDelay(5 / portTICK_PERIOD_MS);
     strip.Show();
@@ -218,12 +218,12 @@ void rainyDay(void * pvParameters) {
       
       setAllPixels(thisWhite); 
   
-      count = 0;
+      count = START_LED;
     }
     
-    int Pixel1Index = random(LED_COUNT);
-    int Pixel2Index = random(LED_COUNT);
-    int Pixel3Index = random(LED_COUNT);
+    int Pixel1Index = random(START_LED, LED_COUNT);
+    int Pixel2Index = random(START_LED, LED_COUNT);
+    int Pixel3Index = random(START_LED, LED_COUNT);
     
     for (int count = 40; count >= 15; count--) {
        strip.SetPixelColor(Pixel1Index, RgbColor(0, 0, count));
@@ -245,18 +245,18 @@ void rainyDay(void * pvParameters) {
 }
 
 /**
- * The super mellow green animation
+ * The super mellow green and yellow animation
  */
  void melloYello(void * pvParameters) {
   (void) pvParameters;
 
-  int count = 0;
+  int count = START_LED;
   int loopdirection = 0;
 
   RgbColor thisGreen(0, 15, 0);
 
   // Startup animation
-  for (int count = 0; count <= LED_COUNT; count++) {
+  for (int count = START_LED; count <= LED_COUNT; count++) {
     strip.SetPixelColor(count, thisGreen);
     delay(5);
     strip.Show();
@@ -265,30 +265,32 @@ void rainyDay(void * pvParameters) {
   while (true) {
     if (count >= LED_COUNT) 
       loopdirection = 1;
-    else if (count <= 0 && loopdirection == 1)
+    else if (count <= START_LED && loopdirection == 1)
       loopdirection = 0;
 
     strip.SetPixelColor(count, black);
     
     if (loopdirection == 0) {
        int brightness = 25;
+       int trailEnd = constrain(count - 25, START_LED, LED_COUNT);
        
-       for(int i = count; i >= count - 25; i--) {
+       for(int i = count; i >= trailEnd; i--) {
          strip.SetPixelColor(i, RgbColor (brightness, brightness, 0));
          brightness--;
        } 
        
-        strip.SetPixelColor(count - 25, thisGreen);
+        strip.SetPixelColor(trailEnd, thisGreen);
         count++;
      } else {
        int brightness = 25;
+       int trailEnd = constrain(count + 25, START_LED, LED_COUNT);
        
-       for(int i = count; i <= count + 25; i++) {
+       for(int i = count; i <= trailEnd; i++) {
          strip.SetPixelColor(i, RgbColor (brightness, brightness, 0));
          brightness--;
        } 
        
-        strip.SetPixelColor(count + 25, thisGreen);
+        strip.SetPixelColor(trailEnd, thisGreen);
         count--;
      }
       
