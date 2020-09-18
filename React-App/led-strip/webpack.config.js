@@ -7,8 +7,11 @@
  *   (https://webpack.js.org/plugins/html-webpack-plugin/)
  * 
  * Change devServer.proxy to your device's URI for development.
- * For deployment, run 'npm run build' and copy dist/index.html and 
- * dist/main.js to your device.
+ * 
+ * For deployment, run 'npm run build'. This will build and bundle
+ * the application and copy it to LEDStripDriver/data. Then, in the
+ * Arduino IDE, use Tools > ESP32 Sketch Data Upload to upload the 
+ * updated build to your device.
  */
 
 const HtmlWebPackPlugin = require("html-webpack-plugin");
