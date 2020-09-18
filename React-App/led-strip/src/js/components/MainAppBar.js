@@ -10,14 +10,18 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import { withStyles } from "@material-ui/core/styles";
+import MenuIcon from '@material-ui/icons/Menu';
 
 const styles = theme => ({
-  powerButton: {
-    marginRight: 0,
-  }, 
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
   title: {
     flexGrow: 1,
-  }
+  },
 });
 
 class MainAppBar extends Component {
@@ -74,16 +78,19 @@ class MainAppBar extends Component {
     const { classes } = this.props;
 
     return (
-      <div>
+      <div className={classes.root}>
         <AppBar position="static">
-            <Toolbar>
-                <Typography variant="title" color="inherit" className={classes.powerButton}>
-                  LED Strip Controls
-                </Typography>
-                <IconButton className={classes.powerButton} onClick={() => { this.togglePower() }}>
-                  <PowerSettingsNewIcon style={{fill: this.buttonColor()}}/>
-                </IconButton>
-            </Toolbar>
+          <Toolbar>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+            <Typography edge="start" variant="title" color="inherit" className={classes.title}>
+              LED Strip Controls
+            </Typography>
+            <IconButton onClick={() => { this.togglePower() }}>
+              <PowerSettingsNewIcon style={{fill: this.buttonColor()}}/>
+            </IconButton>
+          </Toolbar>
         </AppBar>
       </div>
     );
