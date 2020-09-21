@@ -45,7 +45,23 @@ TaskHandle_t currentTaskHandler = NULL;
 void animationFunction(void * pvParameters) {
   (void) pvParameters;
 
-  // You can run any setup or a startup animation here
+  int evenIndex = 0;
+  bool swapRG = false;
+
+  /**
+   * You can run any setup or a startup animation here
+   * Example - Set all pixels to a dim white, left to right:
+   * 
+   * RgbColor dimWhite = RgbColor(20);
+  
+   * for (int pixelIndex = START_LED; pixelIndex <= LED_COUNT; pixelIndex++) {
+   *   strip.SetPixelColor(pixelIndex, dimWhite);
+   *   strip.Show();
+
+   *   // Delay 5 milleseconds between pixels
+   *   vTaskDelay(5 / portTICK_PERIOD_MS);
+   * }
+   */
   
   // Main animation loop
   while (true) {
@@ -72,6 +88,25 @@ void initLEDs() {
   strip.Show();
 }
 
+
+/*  *  *  *  *  *  *  *   * Animation Task  *  *  *  *  *  *  *  */
+
+/*
+ * Create a task to run the animation 
+ */
+void runAnimation() {
+  // Create new task to run the animation
+  xTaskCreate(
+    animationFunction,
+    "New Animation",
+    1024, // Stack size (bytes)
+    NULL, // Parameter to pass
+    1,    // Task priority (high)
+    &currentTaskHandler  // Task handle
+  );
+}
+
+/*  *  *  *  *  *  *  *   * Animation Task  *  *  *  *  *  *  *  */
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
 
@@ -153,26 +188,6 @@ void startOTA() {
 }
 
 /*  *  *  *  *  *  *  *  *  *  * OTA  *  *  *  *  *  *  *  *  *  */
-
-/*  *  *  *  *  *  *  *   * Animation Code  *  *  *  *  *  *  *  */
-
-/*
- * Create a task to run the animation 
- */
-void runAnimation() {
-  // Create new task to run the animation
-  xTaskCreate(
-    animationFunction,
-    "New Animation",
-    1024, // Stack size (bytes)
-    NULL, // Parameter to pass
-    1,    // Task priority (high)
-    &currentTaskHandler  // Task handle
-  );
-}
-
-/*  *  *  *  *  *  *  *   * Animation Code  *  *  *  *  *  *  *  */
-
 
 void setup() {
   #ifdef DEBUG
