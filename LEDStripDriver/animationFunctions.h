@@ -17,6 +17,58 @@
 #include "animationFunctionHelpers.h"
 #include "config.h"
 
+/**
+ * Odd numbered pixels are colored snow white. Even pixels
+ * are colored red and green, swapping places each loop to
+ * achieve a moving effect.
+ */
+void christmasRGDance(void * pvParameters) {
+  (void) pvParameters;
+
+  int evenIndex = 0;
+  bool swapRG = false;
+
+  RgbColor dimWhite = RgbColor(20);
+
+  // Startup animation
+  for (int pixelIndex = START_LED; pixelIndex <= LED_COUNT; pixelIndex++) {
+   strip.SetPixelColor(pixelIndex, dimWhite);
+   strip.Show();
+  
+   // Delay 5 milleseconds between pixels
+   vTaskDelay(5 / portTICK_PERIOD_MS);
+  }
+  
+  // Main animation loop
+  while (true) {
+    for (int pixelIndex = START_LED; pixelIndex <= LED_COUNT; pixelIndex++) {
+      if (pixelIndex % 2 == 0) {
+        if (evenIndex % 2 == 0) {
+          if (swapRG)
+            strip.SetPixelColor(pixelIndex, green);
+          else
+            strip.SetPixelColor(pixelIndex, red);
+        } else {
+          if (swapRG)
+            strip.SetPixelColor(pixelIndex, red);
+          else
+            strip.SetPixelColor(pixelIndex, green);
+        }
+
+        evenIndex++;
+      } else {
+        strip.SetPixelColor(pixelIndex, dimWhite);
+      }
+    }
+
+    strip.Show();
+
+    swapRG = !swapRG;
+    
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+  }
+}
+
 void copLightsAlternating(void * pvParameters) {
   (void) pvParameters;
 
