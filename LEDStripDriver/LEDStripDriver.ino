@@ -85,6 +85,9 @@ void connectWifi() {
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
       Serial.println("WiFi connection failed!");
 
+      strip.SetPixelColor(0, RgbColor(255, 0, 0));
+      strip.Show();
+
       if(BLOCK_UNTIL_CONNECTED) {
         Serial.print("Retrying in ");
         Serial.print(CONNECT_TIMEOUT);
@@ -107,6 +110,9 @@ void connectWifi() {
 
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
+
+  strip.SetPixelColor(0, RgbColor(0, 255, 0));
+  strip.Show();
 }
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
