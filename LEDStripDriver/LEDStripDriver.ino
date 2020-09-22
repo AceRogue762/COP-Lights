@@ -83,29 +83,27 @@ void connectWifi() {
   WiFi.begin(NETWORK_SSID, NETWORK_PASS);
   
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-      Serial.println("WiFi connection failed!");
+    Serial.println("WiFi connection failed!");
 
-      strip.SetPixelColor(0, RgbColor(255, 0, 0));
-      strip.Show();
+    strip.SetPixelColor(0, RgbColor(255, 0, 0));
+    strip.Show();
 
-      if(BLOCK_UNTIL_CONNECTED) {
-        Serial.print("Retrying in ");
-        Serial.print(CONNECT_TIMEOUT);
-        Serial.println(" seconds");
+    if(BLOCK_UNTIL_CONNECTED) {
+      Serial.print("Retrying in ");
+      Serial.print(CONNECT_TIMEOUT);
+      Serial.println(" seconds");
+      
+      delay(CONNECT_TIMEOUT * 1000);
+      
+      while(WiFi.waitForConnectResult() != WL_CONNECTED) {
+        Serial.println("Retrying...");
+        WiFi.begin(NETWORK_SSID, NETWORK_PASS);
         
-        delay(CONNECT_TIMEOUT * 1000);
-        
-        while(WiFi.waitForConnectResult() != WL_CONNECTED) {
-          Serial.println("Retrying...");
-          WiFi.begin(NETWORK_SSID, NETWORK_PASS);
-          
-          delay(CONNECT_TIMEOUT * 1000); 
-        }
-      } else {
-        return;
+        delay(CONNECT_TIMEOUT * 1000); 
       }
-      
-      
+    } else {
+      return;
+    } 
   }
 
   Serial.print("IP Address: ");
@@ -536,7 +534,6 @@ void startSPIFFS() {
 }
 
 /*  *  *  *  *  *  *  *  *  *  * SPIFFS *  *  *  *  *  *  *  *  *  *  */
-
 
 void setup() {
   #ifdef DEBUG
