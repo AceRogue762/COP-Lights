@@ -32,12 +32,25 @@ void christmasRGDance(void * pvParameters) {
 
   // Startup animation
   for (int pixelIndex = START_LED; pixelIndex <= LED_COUNT; pixelIndex++) {
-   strip.SetPixelColor(pixelIndex, dimWhite);
-   strip.Show();
+    if (pixelIndex % 2 == 0) {
+      if (evenIndex % 2 == 0) {
+        strip.SetPixelColor(pixelIndex, red);
+      } else {
+        strip.SetPixelColor(pixelIndex, green);
+      }
+
+      evenIndex++;
+    } else {
+      strip.SetPixelColor(pixelIndex, dimWhite);
+    }
+   
+    strip.Show();
   
-   // Delay 5 milleseconds between pixels
-   vTaskDelay(5 / portTICK_PERIOD_MS);
+    // Delay 5 milleseconds between pixels
+    vTaskDelay(5 / portTICK_PERIOD_MS);
   }
+
+  evenIndex = 0;
   
   // Main animation loop
   while (true) {
