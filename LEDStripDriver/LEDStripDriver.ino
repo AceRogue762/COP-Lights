@@ -17,7 +17,7 @@
  * See animations.h for adding new animations.
  */
 
-#include <ESPAsync_WiFiManager.h>
+#include <ESPAsyncWiFiManager.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
 #include <WiFiUdp.h>
@@ -28,8 +28,12 @@
 #include "config.h"
 #include "animations.h"
 
-// Create webserver object
+// Create webserver and DNS server objects
 AsyncWebServer webServer(SERVER_PORT);
+DNSServer dnsServer;
+
+// Create the WiFiManager object
+AsyncWiFiManager wifiManager(&webServer,&dnsServer);
 
 // Task handler for animation
 TaskHandle_t currentTaskHandler = NULL;
@@ -75,37 +79,46 @@ String getSystemStatus() {
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
 
 /**
- * Connect to preconfigured WiFi network. Optionally blocks
- * until connected.
+ * Called when entering WiFi config mode
+ */
+void configModeCallback (AsyncWiFiManager *wifiManager) {
+  // Set status LED to yellow
+  strip.SetPixelColor(0, RgbColor(255, 255, 0));
+  strip.Show();
+
+  Serial.println("Entered config mode");
+  Serial.println(WiFi.softAPIP());
+  Serial.println(wifiManager -> getConfigPortalSSID());
+}
+
+/**
+ * Connect to preconfigured WiFi network using ESPAsyncWiFiManager.
+ * If there is no network configured, an access point is created.
  */
 void connectWifi() {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(NETWORK_SSID, NETWORK_PASS);
-  
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-      Serial.println("WiFi connection failed!");
+  wifiManager.setAPCallback(configModeCallback);
 
-      strip.SetPixelColor(0, RgbColor(255, 0, 0));
-      strip.Show();
+  if (!wifiManager.autoConnect()) {
+    // Set status LED to red
+    strip.SetPixelColor(0, RgbColor(255, 0, 0));
+    strip.Show();
+    
+    Serial.println("WiFi connection failed");
 
-      if(BLOCK_UNTIL_CONNECTED) {
-        Serial.print("Retrying in ");
-        Serial.print(CONNECT_TIMEOUT);
-        Serial.println(" seconds");
-        
-        delay(CONNECT_TIMEOUT * 1000);
-        
-        while(WiFi.waitForConnectResult() != WL_CONNECTED) {
-          Serial.println("Retrying...");
-          WiFi.begin(NETWORK_SSID, NETWORK_PASS);
-          
-          delay(CONNECT_TIMEOUT * 1000); 
-        }
-      } else {
-        return;
+    if(BLOCK_UNTIL_CONNECTED) {
+      Serial.print("Retrying in ");
+      Serial.print(CONNECT_TIMEOUT);
+      Serial.println(" seconds");
+      
+      delay(CONNECT_TIMEOUT * 1000);
+      
+      while (!wifiManager.autoConnect()) {
+        Serial.println("Retrying...");
+        delay(CONNECT_TIMEOUT * 1000); 
       }
-      
-      
+    } else {
+      return;
+    } 
   }
 
   Serial.print("IP Address: ");
@@ -536,7 +549,6 @@ void startSPIFFS() {
 }
 
 /*  *  *  *  *  *  *  *  *  *  * SPIFFS *  *  *  *  *  *  *  *  *  *  */
-
 
 void setup() {
   #ifdef DEBUG
