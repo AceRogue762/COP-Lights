@@ -194,11 +194,16 @@ void copLightsLineOut(void * pvParameters) {
       setAllPixels(black);
       pixelIndex = START_LED;
     }
-    
+
+    // Calculate the end of each line, constrain to within bounds of the strip
+    int rLineEnd = constrain(pixelIndex - lineSize / 2, START_LED, median - lineSize / 2);
+    int bLineEnd = constrain(LED_COUNT - pixelIndex + lineSize / 2, START_LED, LED_COUNT);
+
+    // Update pixels
     strip.SetPixelColor(pixelIndex, red);
     strip.SetPixelColor(LED_COUNT - pixelIndex, blue);
-    strip.SetPixelColor(LED_COUNT - lineSize / 2, black);
-    strip.SetPixelColor(LED_COUNT - pixelIndex + lineSize / 2, black);
+    strip.SetPixelColor(rLineEnd, black);
+    strip.SetPixelColor(bLineEnd, black);
     
     strip.Show();
     pixelIndex++;
