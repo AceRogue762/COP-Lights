@@ -138,6 +138,14 @@ void connectWifi() {
 void startOTA() {
   ArduinoOTA.onStart([]() {
     Serial.println("OTA start");
+
+    // End the current animation task
+    if(currentTaskHandler != NULL) {
+      vTaskDelete(currentTaskHandler);
+      currentTaskHandler = NULL;
+    }
+    
+    setAllPixels(black);
   });
   
   ArduinoOTA.onEnd([]() {
@@ -145,7 +153,8 @@ void startOTA() {
   });
   
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("OTA Progress: %u%%\r", (progress / (total / 100)));
+    int percentDone = progress / (total / 100);
+    Serial.printf("OTA Progress: %u%%\r", percentDone);
   });
   
   ArduinoOTA.onError([](ota_error_t error) {
