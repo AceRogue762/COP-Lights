@@ -2,8 +2,8 @@
  * Component to load a list of buttons corresponding to LED strip
  * animations
  * 
- * - Available animations are fetched from /animations/get.
- * - Each button triggers a GET request to /animations/select?id=[animationId]
+ * - Available animations are fetched from /api/animations/get.
+ * - Each button triggers a GET request to /api/animations/select?id=[animationId]
  */
 
 import React, { Component } from "react";
