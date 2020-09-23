@@ -21,6 +21,9 @@ import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from "@material-ui/core/styles";
 import MenuIcon from '@material-ui/icons/Menu';
 
+import AnimationButtonList from "./AnimationButtonList";
+import EffectPicker from "./EffectPicker";
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -41,6 +44,10 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
   },
   title: {
     flexGrow: 1,
@@ -65,7 +72,8 @@ class MainAppBar extends Component {
 
     this.state = {
       power: 0, 
-      mobileOpen: false
+      mobileOpen: false, 
+      contentId: 'animations'
     };
   }
 
@@ -75,6 +83,14 @@ class MainAppBar extends Component {
       mobileOpen: !prevState.mobileOpen
     }));
   };
+
+  // Switch the content to a different "page" and close the menu
+  handleMenuButtonClick(buttonId) {
+    this.setState({
+      contentId: buttonId, 
+      mobileOpen: false
+    })
+  }
 
   // Fetch current power status
   componentDidMount() {
@@ -117,6 +133,25 @@ class MainAppBar extends Component {
     return color;
   }
 
+  // Determine the current content based on state
+  visibleContent() {
+    let content;
+
+    switch(this.state.contentId) {
+      case 'animations':
+        content = <AnimationButtonList />;
+        break;
+      case 'effects':
+        content = <EffectPicker />;
+        break;
+      default:
+        content = <AnimationButtonList />;
+        break;
+    }
+
+    return content;
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -125,12 +160,18 @@ class MainAppBar extends Component {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          <ListItem button key='animations'>
+          <ListItem 
+            button 
+            onClick={() => this.handleMenuButtonClick('animations')}
+          >
             <ListItemIcon> <WbIncandescentIcon /> </ListItemIcon>
             <ListItemText primary='Animations' />
           </ListItem>
   
-          <ListItem button key='effects'>
+          <ListItem 
+            button 
+            onClick={() => this.handleMenuButtonClick('effects')}
+          >
             <ListItemIcon> <PaletteIcon /> </ListItemIcon>
             <ListItemText primary='Effects' />
           </ListItem>
@@ -160,7 +201,7 @@ class MainAppBar extends Component {
           </Toolbar>
         </AppBar>
 
-        <nav className={classes.drawer} aria-label="mailbox folders">
+        <nav className={classes.drawer} aria-label="menu">
         <Hidden smUp implementation="css">
           <Drawer
             container={container}
@@ -192,7 +233,7 @@ class MainAppBar extends Component {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-
+        {this.visibleContent()}
       </main>
       </div>
     );

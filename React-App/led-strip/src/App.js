@@ -10,17 +10,22 @@ import ReactDOM from "react-dom";
 // Import components
 import MainAppBar from "./js/components/MainAppBar";
 import AnimationButtonList from "./js/components/AnimationButtonList";
+import EffectPicker from "./js/components/EffectPicker";
 
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <MainAppBar />
-        <div style={{marginTop: 20}}>
-            <AnimationButtonList />
-        </div>
-      </div>
+    //  <div className="App">
+    //    <MainAppBar />
+    //    <div style={{marginTop: 20}}>
+    //        <AnimationButtonList />
+    //        <EffectPicker />
+    //    </div>
+    //  </div>
+    <div className="App">
+      <MainAppBar />
+    </div>
     );
   }
 }
