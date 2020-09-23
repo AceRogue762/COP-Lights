@@ -28,8 +28,19 @@ class EffectPicker extends Component {
       };
     }
   
+    // Set color and send to device
     handlePrimaryColorChange(color) {
-      this.setState({ selectedColor: color.rgb });
+      let r = color.rgb.r;
+      let g = color.rgb.g;
+      let b = color.rgb.b;
+
+      fetch('/api/effects/set?r=' + r + '&g=' + g + '&b=' + b)
+        .then((response) => response.json())
+        .then((data) => 
+          this.setState({ 
+            selectedColor: color.rgb 
+          })
+      );
     };
   
     render() {

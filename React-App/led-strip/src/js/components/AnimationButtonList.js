@@ -17,6 +17,12 @@ const WhiteTextTypography = withStyles({
   }
 })(Typography);
 
+const styles = theme => ({
+  buttons: {
+    
+  }
+});
+
 class AnimationButtonList extends Component {
   constructor() {
     super();
@@ -50,17 +56,17 @@ class AnimationButtonList extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
       <div>
-        <WhiteTextTypography variant="h5" color="textSecondary" gutterBottom>
-          Animations
-        </WhiteTextTypography>
         <ButtonGroup 
+          className = {classes.buttons}
           orientation="vertical" 
           color="primary" 
           variant="contained"
           fullWidth
-          >
+        >
           {this.state.animations.map((animation) =>
             <Button onClick={() => { this.selectAnimation(animation.id) }}>
               {animation.name}
@@ -68,9 +74,8 @@ class AnimationButtonList extends Component {
           )}
         </ButtonGroup>
       </div>
-      
     );
   }
 }
 
-export default AnimationButtonList;
+export default withStyles(styles)(AnimationButtonList);

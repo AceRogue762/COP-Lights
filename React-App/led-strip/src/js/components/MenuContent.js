@@ -1,9 +1,8 @@
 /**
- * Material AppBar displayed at the top of each view
+ * Main app component displaying menu and selected content
  */
 
 import React, { Component } from "react";
-
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -21,8 +20,21 @@ import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from "@material-ui/core/styles";
 import MenuIcon from '@material-ui/icons/Menu';
 
+// Import components
 import AnimationButtonList from "./AnimationButtonList";
 import EffectPicker from "./EffectPicker";
+
+// Map menu button id to content and title
+const contentMap = {
+  'animations': {
+    content: <AnimationButtonList />, 
+    title: 'Animations'
+  }, 
+  'effects': {
+    content: <EffectPicker />, 
+    title: 'Effects'
+  }
+}
 
 const drawerWidth = 240;
 
@@ -45,7 +57,7 @@ const styles = theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
+      width: `calc(97% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
   },
@@ -66,7 +78,7 @@ const styles = theme => ({
   },
 });
 
-class MainAppBar extends Component {
+class MenuContent extends Component {
   constructor() {
     super();
 
@@ -135,21 +147,12 @@ class MainAppBar extends Component {
 
   // Determine the current content based on state
   visibleContent() {
-    let content;
+    return contentMap[this.state.contentId].content;
+  }
 
-    switch(this.state.contentId) {
-      case 'animations':
-        content = <AnimationButtonList />;
-        break;
-      case 'effects':
-        content = <EffectPicker />;
-        break;
-      default:
-        content = <AnimationButtonList />;
-        break;
-    }
-
-    return content;
+  // Determine the current title based on state
+  visibleTitle() {
+    return contentMap[this.state.contentId].title;
   }
 
   render() {
@@ -193,7 +196,7 @@ class MainAppBar extends Component {
             <MenuIcon />
           </IconButton>
             <Typography edge="start" variant="subtitle1" color="inherit" className={classes.title}>
-              LED Strip Controls
+              {this.visibleTitle()}
             </Typography>
             <IconButton onClick={() => { this.togglePower() }}>
               <PowerSettingsNewIcon style={{fill: this.buttonColor()}}/>
@@ -240,4 +243,4 @@ class MainAppBar extends Component {
   }
 }
 
-export default withStyles(styles)(MainAppBar);
+export default withStyles(styles)(MenuContent);
