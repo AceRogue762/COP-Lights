@@ -17,6 +17,7 @@
  * See animations.h for adding new animations.
  */
 
+#include <ESPAsync_WiFiManager.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
 #include <WiFiUdp.h>
@@ -82,30 +83,34 @@ void connectWifi() {
   WiFi.begin(NETWORK_SSID, NETWORK_PASS);
   
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-      Serial.println("WiFi connection failed!");
+    Serial.println("WiFi connection failed!");
 
-      if(BLOCK_UNTIL_CONNECTED) {
-        Serial.print("Retrying in ");
-        Serial.print(CONNECT_TIMEOUT);
-        Serial.println(" seconds");
+    strip.SetPixelColor(0, RgbColor(255, 0, 0));
+    strip.Show();
+
+    if(BLOCK_UNTIL_CONNECTED) {
+      Serial.print("Retrying in ");
+      Serial.print(CONNECT_TIMEOUT);
+      Serial.println(" seconds");
+      
+      delay(CONNECT_TIMEOUT * 1000);
+      
+      while(WiFi.waitForConnectResult() != WL_CONNECTED) {
+        Serial.println("Retrying...");
+        WiFi.begin(NETWORK_SSID, NETWORK_PASS);
         
-        delay(CONNECT_TIMEOUT * 1000);
-        
-        while(WiFi.waitForConnectResult() != WL_CONNECTED) {
-          Serial.println("Retrying...");
-          WiFi.begin(NETWORK_SSID, NETWORK_PASS);
-          
-          delay(CONNECT_TIMEOUT * 1000); 
-        }
-      } else {
-        return;
+        delay(CONNECT_TIMEOUT * 1000); 
       }
-      
-      
+    } else {
+      return;
+    } 
   }
 
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
+
+  strip.SetPixelColor(0, RgbColor(0, 255, 0));
+  strip.Show();
 }
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
@@ -529,7 +534,6 @@ void startSPIFFS() {
 }
 
 /*  *  *  *  *  *  *  *  *  *  * SPIFFS *  *  *  *  *  *  *  *  *  *  */
-
 
 void setup() {
   #ifdef DEBUG
