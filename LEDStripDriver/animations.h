@@ -26,11 +26,12 @@ typedef struct animationTableEntry {
 // Animation mapping table. Add new animations here.
 animationTableEntry animationTable[] =
 { 
-  { 1, "Cop Lights Alternating", &copLightsAlternating },
-  { 2, "Cop Lights Line Out",    &copLightsLineOut },
-  { 3, "Cop Lights Mix",         &copLightsMix },
-  { 4, "MelloYello",             &melloYello },
-  { 5, "Rainy Day",              &rainyDay },
+  { 1, "Christmas Red Green Dance", &christmasRGDance },
+  { 2, "Cop Lights Alternating",    &copLightsAlternating },
+  { 3, "Cop Lights Line Out",       &copLightsLineOut },
+  { 4, "Cop Lights Mix",            &copLightsMix },
+  { 5, "MelloYello",                &melloYello },
+  { 6, "Rainy Day",                 &rainyDay },
   { NULL }
 };
 
