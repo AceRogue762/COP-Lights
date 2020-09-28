@@ -7,7 +7,7 @@
 import React, { Component } from "react";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
-import { HuePicker } from 'react-color';
+import { HuePicker, AlphaPicker } from 'react-color';
 
 const WhiteTextTypography = withStyles({
     root: {
@@ -23,33 +23,44 @@ class EffectPicker extends Component {
         primaryColor: {
           r: 0, 
           g: 0, 
-          b: 0
+          b: 0, 
+          a: 1
         }
       };
     }
-  
-    // Set color and send to device
+
+    // Set primary color and send to device
     handlePrimaryColorChange(color) {
-      let r = color.rgb.r;
-      let g = color.rgb.g;
-      let b = color.rgb.b;
+      let a = color.rgb.a;
+
+      // Scale RGB values according to alpha
+      let r = color.rgb.r * a;
+      let g = color.rgb.g * a;
+      let b = color.rgb.b * a;
 
       fetch('/api/effects/set?r=' + r + '&g=' + g + '&b=' + b)
         .then((response) => response.json())
         .then((data) => 
           this.setState({ 
-            selectedColor: color.rgb 
+            primaryColor: color.rgb 
           })
       );
     };
-  
+
     render() {
       return (
         <div>
           <WhiteTextTypography variant="h5" color="textSecondary" gutterBottom>
             Primary Color
           </WhiteTextTypography>
-          <HuePicker color={ this.state.primaryColor } onChangeComplete={ this.handlePrimaryColorChange }/>
+          <HuePicker 
+            color={ this.state.primaryColor } 
+            onChangeComplete={ this.handlePrimaryColorChange }
+          />
+          <AlphaPicker 
+            color={ this.state.primaryColor }
+            onChangeComplete={ this.handlePrimaryColorChange }
+          />
         </div>
         
       );

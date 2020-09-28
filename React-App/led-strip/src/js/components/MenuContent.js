@@ -24,6 +24,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AnimationButtonList from "./AnimationButtonList";
 import EffectPicker from "./EffectPicker";
 
+const WhiteTextTypography = withStyles({
+  root: {
+    color: "#FFFFFF"
+  }
+})(Typography);
+
 // Map menu button id to content and title
 const contentMap = {
   'animations': {
@@ -40,7 +46,7 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -52,6 +58,7 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
+    backgroundColor: '#464d5b'
   },
   content: {
     flexGrow: 1,
@@ -76,6 +83,13 @@ const styles = theme => ({
       flexShrink: 0,
     },
   },
+  powerButton: { 
+    height:'30px',
+    width:'30px'
+  }, 
+  whiteIcon: {
+    color: '#ffffff'
+  }
 });
 
 class MenuContent extends Component {
@@ -159,24 +173,36 @@ class MenuContent extends Component {
     const { classes } = this.props;
 
     const drawer = (
-      <div>
-        <div className={classes.toolbar} />
+      <div className='drawer'>
+        <div className={classes.toolbar}/>
         <Divider />
         <List>
           <ListItem 
             button 
             onClick={() => this.handleMenuButtonClick('animations')}
           >
-            <ListItemIcon> <WbIncandescentIcon /> </ListItemIcon>
-            <ListItemText primary='Animations' />
+            <ListItemIcon> 
+              <WbIncandescentIcon className={classes.whiteIcon}/> 
+            </ListItemIcon>
+            <ListItemText primary={
+              <WhiteTextTypography variant="body">
+                Animations
+              </WhiteTextTypography>
+              }/>
           </ListItem>
   
           <ListItem 
             button 
             onClick={() => this.handleMenuButtonClick('effects')}
           >
-            <ListItemIcon> <PaletteIcon /> </ListItemIcon>
-            <ListItemText primary='Effects' />
+            <ListItemIcon> 
+              <PaletteIcon className={classes.whiteIcon}/> 
+            </ListItemIcon>
+            <ListItemText primary={
+              <WhiteTextTypography variant="body">
+                Effects
+              </WhiteTextTypography>
+            } />
           </ListItem>
         </List>
       </div>
@@ -198,8 +224,8 @@ class MenuContent extends Component {
             <Typography edge="start" variant="subtitle1" color="inherit" className={classes.title}>
               {this.visibleTitle()}
             </Typography>
-            <IconButton onClick={() => { this.togglePower() }}>
-              <PowerSettingsNewIcon style={{fill: this.buttonColor()}}/>
+            <IconButton style={{backgroundColor: this.buttonColor()}} className={classes.powerButton} onClick={() => { this.togglePower() }}>
+              <PowerSettingsNewIcon className={classes.whiteIcon}/>
             </IconButton>
           </Toolbar>
         </AppBar>
