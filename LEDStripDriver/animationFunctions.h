@@ -214,10 +214,46 @@ void copLightsLineOut(void * pvParameters) {
 void halloweenOrange(void * pvParameters) {
   (void) pvParameters;
   // Setup
+  int LineSize = 12;
+  RgbColor orange(74, 20, 0);
+  bool swap = false;
+
+  for (int count = START_LED; count <= LED_COUNT; count += LineSize * 2) {
+    for (int LineCount = count; LineCount <= count + LineSize; LineCount++) {
+      strip.SetPixelColor(LineCount, orange);
+      vTaskDelay(5 / portTICK_PERIOD_MS);
+      strip.Show();
+    }
+  }
   
   // Main animation loop
   while (true) {
+    for (int brightness = 74; brightness >= 0; brightness-=4) {
+      for (int count = START_LED; count <= LED_COUNT; count += LineSize * 2) {
+        for (int LineCount = count; LineCount <= count + LineSize; LineCount++) {
+          if (swap) {
+            int SwappedBrightness = 74 - brightness;
+            strip.SetPixelColor(LineCount, RgbColor(SwappedBrightness, SwappedBrightness/4, 0));
+          } else {
+            strip.SetPixelColor(LineCount, RgbColor(brightness, brightness/4, 0));
+          }       
+        }  
+              
+        for (int SecondLineCount = count + LineSize; SecondLineCount <= count + LineSize * 2; SecondLineCount++) {
+          if (!swap) {
+            int SwappedBrightness = 74 - brightness;
+            strip.SetPixelColor(SecondLineCount, RgbColor(SwappedBrightness, SwappedBrightness/4, 0));
+          } else {
+            strip.SetPixelColor(SecondLineCount, RgbColor(brightness, brightness/4, 0));
+          }    
+        }      
+      }
 
+      strip.Show();
+      vTaskDelay(70 / portTICK_PERIOD_MS);
+    }
+      
+     swap = !swap;
   }
 }
 
