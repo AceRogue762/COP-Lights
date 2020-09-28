@@ -10,10 +10,10 @@ import { withStyles } from "@material-ui/core/styles";
 import { HuePicker, AlphaPicker } from 'react-color';
 
 const WhiteTextTypography = withStyles({
-    root: {
-      color: "#FFFFFF"
-    }
-  })(Typography);
+  root: {
+    color: "#FFFFFF"
+  }
+})(Typography);
 
 class EffectPicker extends Component {
     constructor() {
@@ -29,23 +29,58 @@ class EffectPicker extends Component {
       };
     }
 
-    // Set primary color and send to device
-    handlePrimaryColorChange(color) {
+    // Set primary color state
+    handlePrimaryColorChange = (color) => {
+      let r = color.rgb.r;
+      let g = color.rgb.g;
+      let b = color.rgb.b;
+      let a = this.state.primaryColor.a;
+
+      this.setState({ 
+        primaryColor: {
+          r: r, 
+          g: g, 
+          b: b, 
+          a: a
+        }
+      });
+    };
+
+    // Send color to device
+    handlePrimaryColorChangeComplete = (color) => {
+      let r = this.state.primaryColor.r;
+      let g = this.state.primaryColor.g;
+      let b = this.state.primaryColor.b;
+      let a = this.state.primaryColor.a;
+
+      // Scale RGB values by alpha
+      let scaledR = r * a;
+      let scaledG = g * a;
+      let scaledB = b * a;
+
+      fetch('/api/effects/set?r=' + scaledR + '&g=' + scaledG + '&b=' + scaledB);
+        //.then((response) => response.json())
+        //.then((data) => 
+
+      //);
+    };
+
+    // Set primary color alpha value
+    handlePrimaryAlphaChange = (color) => {
+      let r = this.state.primaryColor.r;
+      let g = this.state.primaryColor.g;
+      let b = this.state.primaryColor.b;
       let a = color.rgb.a;
 
-      // Scale RGB values according to alpha
-      let r = color.rgb.r * a;
-      let g = color.rgb.g * a;
-      let b = color.rgb.b * a;
-
-      fetch('/api/effects/set?r=' + r + '&g=' + g + '&b=' + b)
-        .then((response) => response.json())
-        .then((data) => 
-          this.setState({ 
-            primaryColor: color.rgb 
-          })
-      );
-    };
+      this.setState({ 
+        primaryColor: {
+          r: r, 
+          g: g, 
+          b: b, 
+          a: a
+        }
+      });
+    }
 
     render() {
       return (
@@ -55,11 +90,12 @@ class EffectPicker extends Component {
           </WhiteTextTypography>
           <HuePicker 
             color={ this.state.primaryColor } 
-            onChangeComplete={ this.handlePrimaryColorChange }
+            onChange={ this.handlePrimaryColorChange }
+            onChangeComplete={ this.handlePrimaryColorChangeComplete }
           />
           <AlphaPicker 
             color={ this.state.primaryColor }
-            onChangeComplete={ this.handlePrimaryColorChange }
+            onChange={ this.handlePrimaryAlphaChange }
           />
         </div>
         

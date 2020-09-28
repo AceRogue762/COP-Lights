@@ -9,13 +9,6 @@
 import React, { Component } from "react";
 import { Button, ButtonGroup } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF"
-  }
-})(Typography);
 
 const styles = theme => ({
   buttons: {
