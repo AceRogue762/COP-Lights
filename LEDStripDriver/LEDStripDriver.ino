@@ -17,6 +17,7 @@
  * See animations.h for adding new animations.
  */
 
+#include <ESPAsyncWiFiManager.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
 #include <WiFiUdp.h>
@@ -27,8 +28,12 @@
 #include "config.h"
 #include "animations.h"
 
-// Create webserver object
+// Create webserver and DNS server objects
 AsyncWebServer webServer(SERVER_PORT);
+DNSServer dnsServer;
+
+// Create the WiFiManager object
+AsyncWiFiManager wifiManager(&webServer,&dnsServer);
 
 // Task handler for animation
 TaskHandle_t currentTaskHandler = NULL;
@@ -74,18 +79,31 @@ String getSystemStatus() {
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
 
 /**
- * Connect to preconfigured WiFi network. Optionally blocks
- * until connected.
+ * Called when entering WiFi config mode
+ */
+void configModeCallback (AsyncWiFiManager *wifiManager) {
+  // Set status LED to yellow
+  strip.SetPixelColor(0, RgbColor(255, 255, 0));
+  strip.Show();
+
+  Serial.println("Entered config mode");
+  Serial.println(WiFi.softAPIP());
+  Serial.println(wifiManager -> getConfigPortalSSID());
+}
+
+/**
+ * Connect to preconfigured WiFi network using ESPAsyncWiFiManager.
+ * If there is no network configured, an access point is created.
  */
 void connectWifi() {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(NETWORK_SSID, NETWORK_PASS);
-  
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("WiFi connection failed!");
+  wifiManager.setAPCallback(configModeCallback);
 
+  if (!wifiManager.autoConnect()) {
+    // Set status LED to red
     strip.SetPixelColor(0, RgbColor(255, 0, 0));
     strip.Show();
+    
+    Serial.println("WiFi connection failed");
 
     if(BLOCK_UNTIL_CONNECTED) {
       Serial.print("Retrying in ");
@@ -94,10 +112,8 @@ void connectWifi() {
       
       delay(CONNECT_TIMEOUT * 1000);
       
-      while(WiFi.waitForConnectResult() != WL_CONNECTED) {
+      while (!wifiManager.autoConnect()) {
         Serial.println("Retrying...");
-        WiFi.begin(NETWORK_SSID, NETWORK_PASS);
-        
         delay(CONNECT_TIMEOUT * 1000); 
       }
     } else {
@@ -122,6 +138,14 @@ void connectWifi() {
 void startOTA() {
   ArduinoOTA.onStart([]() {
     Serial.println("OTA start");
+
+    // End the current animation task
+    if(currentTaskHandler != NULL) {
+      vTaskDelete(currentTaskHandler);
+      currentTaskHandler = NULL;
+    }
+    
+    setAllPixels(black);
   });
   
   ArduinoOTA.onEnd([]() {
@@ -129,7 +153,8 @@ void startOTA() {
   });
   
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("OTA Progress: %u%%\r", (progress / (total / 100)));
+    int percentDone = progress / (total / 100);
+    Serial.printf("OTA Progress: %u%%\r", percentDone);
   });
   
   ArduinoOTA.onError([](ota_error_t error) {
