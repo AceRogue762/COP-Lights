@@ -77,6 +77,7 @@ void christmasRGDance(void * pvParameters) {
     strip.Show();
 
     swapRG = !swapRG;
+    evenIndex = 0;
     
     vTaskDelay(500 / portTICK_PERIOD_MS);
   }
