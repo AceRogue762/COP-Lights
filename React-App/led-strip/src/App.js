@@ -14,9 +14,9 @@ import MenuContent from "./js/components/MenuContent";
 class App extends Component {
   render() {
     return (
-    <div className="App">
-      <MenuContent />
-    </div>
+      <div className="App">
+        <MenuContent />
+      </div>
     );
   }
 }
