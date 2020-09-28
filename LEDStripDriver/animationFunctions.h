@@ -211,6 +211,16 @@ void copLightsLineOut(void * pvParameters) {
   }
 }
 
+void halloweenOrange(void * pvParameters) {
+  (void) pvParameters;
+  // Setup
+  
+  // Main animation loop
+  while (true) {
+
+  }
+}
+
 void copLightsMix(void * pvParameters) {
   (void) pvParameters;
 
