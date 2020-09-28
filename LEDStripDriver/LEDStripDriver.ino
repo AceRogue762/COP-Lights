@@ -33,7 +33,7 @@ AsyncWebServer webServer(SERVER_PORT);
 DNSServer dnsServer;
 
 // Create the WiFiManager object
-AsyncWiFiManager wifiManager(&webServer,&dnsServer);
+AsyncWiFiManager wifiManager(&webServer, &dnsServer);
 
 // Task handler for animation
 TaskHandle_t currentTaskHandler = NULL;
