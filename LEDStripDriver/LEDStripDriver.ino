@@ -33,7 +33,7 @@ AsyncWebServer webServer(SERVER_PORT);
 DNSServer dnsServer;
 
 // Create the WiFiManager object
-AsyncWiFiManager wifiManager(&webServer,&dnsServer);
+AsyncWiFiManager wifiManager(&webServer, &dnsServer);
 
 // Task handler for animation
 TaskHandle_t currentTaskHandler = NULL;
@@ -197,9 +197,10 @@ static struct endpointTableEntry endpointTable[] =
   { "/api/status",            HTTP_GET, &handleGetStatus       },
   { "/api/power/on",          HTTP_GET, &handlePowerOn         },
   { "/api/power/off",         HTTP_GET, &handlePowerOff        },
+  { "/api/effects/set",       HTTP_GET, &handleSetEffect       },
   { "/api/power/toggle",      HTTP_GET, &handlePowerToggle     },
-  { "/api/animations/select", HTTP_GET, &handleSelectAnimation },
   { "/api/animations/get",    HTTP_GET, &handleGetAnimations   },
+  { "/api/animations/select", HTTP_GET, &handleSelectAnimation },
   { NULL }
 };
 
@@ -382,6 +383,49 @@ void handlePowerOff(AsyncWebServerRequest *request) {
   setAllPixels(black);
 
   // Send the response
+  request -> send(200, "text/json", getSystemStatus());
+}
+
+/**
+ * API endpoint to set an effect (color/animation)
+ */
+void handleSetEffect(AsyncWebServerRequest *request) {
+  int params = request -> params();
+
+  int r, g, b;
+
+  // End the current animation task
+  if(currentTaskHandler != NULL) {
+    vTaskDelete(currentTaskHandler);
+    currentTaskHandler = NULL;
+  }
+
+  // Parse request
+  for(int i=0; i < params; i++) {
+    AsyncWebParameter* parameter = request -> getParam(i);
+
+    if (parameter -> name() == "r") {
+      // Got red color component
+      r = parameter -> value().toInt();
+    }
+
+    if (parameter -> name() == "g") {
+      // Got green color component
+      g = parameter -> value().toInt();
+    }
+
+    if (parameter -> name() == "b") {
+      // Got blue color component
+      b = parameter -> value().toInt();
+    }
+  }
+
+  // Construct the effect color from request parameters
+  RgbColor effectColor = RgbColor(r, g, b);
+
+  // Show the color
+  setAllPixels(effectColor);
+
   request -> send(200, "text/json", getSystemStatus());
 }
 
