@@ -61,7 +61,7 @@ module.exports = {
   
   devServer: {
     proxy: {
-      '/api': 'http://192.168.1.34', 
+      '/api': 'http://192.168.1.34'
     }
   },
 
