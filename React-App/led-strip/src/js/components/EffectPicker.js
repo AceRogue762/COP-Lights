@@ -58,11 +58,8 @@ class EffectPicker extends Component {
       let scaledG = g * a;
       let scaledB = b * a;
 
-      fetch('/api/effects/set?r=' + scaledR + '&g=' + scaledG + '&b=' + scaledB);
-        //.then((response) => response.json())
-        //.then((data) => 
-
-      //);
+      // Send color to API
+      fetch(`/api/effects/set?r=${scaledR}&g=${scaledG}&b=${scaledB}`);
     };
 
     // Set primary color alpha value
@@ -96,6 +93,7 @@ class EffectPicker extends Component {
           <AlphaPicker 
             color={ this.state.primaryColor }
             onChange={ this.handlePrimaryAlphaChange }
+            onChangeComplete={ this.handlePrimaryColorChangeComplete }
           />
         </div>
         
