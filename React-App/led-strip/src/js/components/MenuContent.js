@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from "react";
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import PaletteIcon from '@material-ui/icons/Palette';
@@ -19,16 +19,11 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from "@material-ui/core/styles";
 import MenuIcon from '@material-ui/icons/Menu';
+import WhiteTextTypography from './WhiteTextTypography';
 
 // Import components
 import AnimationButtonList from "./AnimationButtonList";
 import EffectPicker from "./EffectPicker";
-
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF"
-  }
-})(Typography);
 
 // Map menu button id to content and title
 const contentMap = {
@@ -275,5 +270,6 @@ class MenuContent extends Component {
     );
   }
 }
+
 
 export default withStyles(styles)(MenuContent);

@@ -5,15 +5,8 @@
  */
 
 import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
 import { HuePicker, AlphaPicker } from 'react-color';
-
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF"
-  }
-})(Typography);
+import WhiteTextTypography from './WhiteTextTypography';
 
 class EffectPicker extends Component {
     constructor() {

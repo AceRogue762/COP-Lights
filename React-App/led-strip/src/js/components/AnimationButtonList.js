@@ -8,7 +8,6 @@
 
 import React, { Component } from "react";
 import { Button, ButtonGroup } from '@material-ui/core';
-import { withStyles } from "@material-ui/core/styles";
 
 class AnimationButtonList extends Component {
   constructor() {
