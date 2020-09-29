@@ -96,7 +96,6 @@ class EffectPicker extends Component {
             onChangeComplete={ this.handlePrimaryColorChangeComplete }
           />
         </div>
-        
       );
     }
   }
