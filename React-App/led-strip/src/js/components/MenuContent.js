@@ -83,10 +83,6 @@ const styles = theme => ({
       flexShrink: 0,
     },
   },
-  powerButton: { 
-    height:'30px',
-    width:'30px'
-  }, 
   whiteIcon: {
     color: '#ffffff'
   }
@@ -221,10 +217,21 @@ class MenuContent extends Component {
           >
             <MenuIcon />
           </IconButton>
-            <Typography edge="start" variant="subtitle1" color="inherit" className={classes.title}>
+            <Typography 
+              edge="start" 
+              variant="subtitle1" 
+              color="inherit" 
+              className={classes.title}
+            >
               {this.visibleTitle()}
             </Typography>
-            <IconButton style={{backgroundColor: this.buttonColor()}} className={classes.powerButton} onClick={() => { this.togglePower() }}>
+            <IconButton 
+              size="small"
+              style={{
+                backgroundColor: this.buttonColor()
+              }} 
+              onClick={() => { this.togglePower() }}
+            >
               <PowerSettingsNewIcon className={classes.whiteIcon}/>
             </IconButton>
           </Toolbar>
