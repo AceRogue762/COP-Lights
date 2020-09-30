@@ -423,6 +423,7 @@ void rainyDay(void * pvParameters) {
    (void) pvParameters;
 
     int count = START_LED;
+    NeoPixelAnimator animations(LED_COUNT);
     
   // Setup
 
@@ -431,7 +432,25 @@ void rainyDay(void * pvParameters) {
     vTaskDelay(5 / portTICK_PERIOD_MS);
     strip.Show();
   }
+
+  long randNumber;
+   
+    Serial.begin(9600);
+
+    randomSeed(analogRead(0));
+  
+
+  while (true) {
+    randNumber = random(256);
+    Serial.println(randNumber);
+
+    randNumber = random(256);
+    Serial.println(randNumber);
     
-    
-    }
+    randNumber = random(256);
+    Serial.println(randNumber); 
+
+    vTaskDelay(50 / portTICK_PERIOD_MS);
+  }  
+      }
 #endif
