@@ -83,6 +83,10 @@ void christmasRGDance(void * pvParameters) {
   }
 }
 
+/**
+ * Red and blue alternate halves of strip, with white 
+ * flashes in between transitions
+ */
 void copLightsAlternating(void * pvParameters) {
   (void) pvParameters;
 
@@ -211,6 +215,9 @@ void copLightsLineOut(void * pvParameters) {
   }
 }
 
+/**
+ * Fading orange lines on a black background
+ */
 void halloweenOrange(void * pvParameters) {
   (void) pvParameters;
   // Setup
@@ -257,6 +264,9 @@ void halloweenOrange(void * pvParameters) {
   }
 }
 
+/**
+ * Fast, fading red white and blue
+ */
 void copLightsMix(void * pvParameters) {
   (void) pvParameters;
 
@@ -267,14 +277,13 @@ void copLightsMix(void * pvParameters) {
   while (true) {
     if (animations.IsAnimating())
     {
-        // the normal loop just needs these two to run the active animations
+        // The normal loop just needs these two to run the active animations
         animations.UpdateAnimations();
         strip.Show();
     }
     else
     {
-        // no animation runnning, start some 
-        //
+        // No animation runnning, start some 
         FadeInFadeOutRinseRepeat(0.4f); // 0.0 = black, 0.25 is normal, 0.5 is bright
     }
   }
