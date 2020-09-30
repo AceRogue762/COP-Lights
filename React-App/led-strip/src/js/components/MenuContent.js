@@ -82,14 +82,14 @@ const styles = theme => ({
     color: '#ffffff'
   }, 
   logo: {
-    marginLeft: theme.spacing(2),
-    marginTop: theme.spacing(2.5),
+    marginTop: theme.spacing(1),
     height: '25px', 
     width: '25px'
   }, 
-  menuTitle: {
-
-  }
+  drawerTitle: {
+    marginTop: theme.spacing(1), 
+    marginLeft: '-15px'
+  }, 
 });
 
 class MenuContent extends Component {
@@ -175,26 +175,41 @@ class MenuContent extends Component {
     const drawer = (
       <div className='drawer'>
         <div className={classes.toolbar}>
-          <img src='favicon.gif' className={classes.logo}></img>
+        <List dense>
+          <ListItem>
+            <ListItemIcon> 
+            <img src='favicon.gif' className={classes.logo}></img>
+            </ListItemIcon>
+            <ListItemText 
+              className={classes.drawerTitle}  
+              primary={
+                <WhiteTextTypography variant="title">
+                   LED Strip Controls
+                </WhiteTextTypography>
+              }/>
+          </ListItem>
+            </List>
         </div>
         <Divider />
         <List>
           <ListItem 
             button 
+            selected={this.state.contentId === 'animations'}
             onClick={() => this.handleMenuButtonClick('animations')}
           >
             <ListItemIcon> 
               <WbIncandescentIcon className={classes.whiteIcon}/> 
             </ListItemIcon>
             <ListItemText primary={
-              <WhiteTextTypography variant="body">
+              <WhiteTextTypography variant="body" bold>
                 Animations
               </WhiteTextTypography>
-              }/>
+            }/>
           </ListItem>
   
           <ListItem 
             button 
+            selected={this.state.contentId === 'effects'}
             onClick={() => this.handleMenuButtonClick('effects')}
           >
             <ListItemIcon> 
