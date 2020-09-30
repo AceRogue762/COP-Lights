@@ -80,6 +80,15 @@ const styles = theme => ({
   },
   whiteIcon: {
     color: '#ffffff'
+  }, 
+  logo: {
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2.5),
+    height: '25px', 
+    width: '25px'
+  }, 
+  menuTitle: {
+
   }
 });
 
@@ -165,7 +174,9 @@ class MenuContent extends Component {
 
     const drawer = (
       <div className='drawer'>
-        <div className={classes.toolbar}/>
+        <div className={classes.toolbar}>
+          <img src='favicon.gif' className={classes.logo}></img>
+        </div>
         <Divider />
         <List>
           <ListItem 
