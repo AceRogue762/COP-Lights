@@ -61,14 +61,15 @@ module.exports = {
   
   devServer: {
     proxy: {
-      '/api': 'http://192.168.1.34'
+      '/api': 'http://192.168.1.113'
     }
   },
 
   plugins: [
     new HtmlWebPackPlugin({
       template: "./src/index.html",
-      filename: "./index.html"
+      filename: "./index.html", 
+      favicon: "./src/favicon.gif"
     })
   ]
 };

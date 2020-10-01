@@ -195,6 +195,7 @@ struct endpointTableEntry {
 static struct endpointTableEntry endpointTable[] = 
 { 
   { "/",                      HTTP_GET, &handleRoot            },
+  { "/api/reset",             HTTP_GET, &handleReset           },
   { "/api/status",            HTTP_GET, &handleGetStatus       },
   { "/api/power/on",          HTTP_GET, &handlePowerOn         },
   { "/api/power/off",         HTTP_GET, &handlePowerOff        },
@@ -225,6 +226,11 @@ void startWebServer() {
   // Link supporting javascript
   webServer.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/main.js", "text/javascript");
+  });
+
+  // Link favicon
+  webServer.on("/favicon.gif", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/favicon.gif", "text/javascript");
   });
 
   // Add the CORS header, if enabled
@@ -323,6 +329,13 @@ void handleWrongMethod(AsyncWebServerRequest *request) {
  */
 void handleRoot(AsyncWebServerRequest *request) {
   request -> send(SPIFFS, "/index.html", "text/html");
+}
+
+/**
+ * Perform a software reset
+ */
+void handleReset(AsyncWebServerRequest *request) {
+  ESP.restart();
 }
 
 /**
