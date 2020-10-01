@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from "react";
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import PaletteIcon from '@material-ui/icons/Palette';
@@ -19,16 +19,11 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from "@material-ui/core/styles";
 import MenuIcon from '@material-ui/icons/Menu';
+import WhiteTextTypography from './WhiteTextTypography';
 
 // Import components
 import AnimationButtonList from "./AnimationButtonList";
 import EffectPicker from "./EffectPicker";
-
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF"
-  }
-})(Typography);
 
 // Map menu button id to content and title
 const contentMap = {
@@ -83,13 +78,18 @@ const styles = theme => ({
       flexShrink: 0,
     },
   },
-  powerButton: { 
-    height:'30px',
-    width:'30px'
-  }, 
   whiteIcon: {
     color: '#ffffff'
-  }
+  }, 
+  logo: {
+    marginTop: theme.spacing(1),
+    height: '25px', 
+    width: '25px'
+  }, 
+  drawerTitle: {
+    marginTop: theme.spacing(1.5), 
+    marginLeft: '-15px'
+  }, 
 });
 
 class MenuContent extends Component {
@@ -174,25 +174,42 @@ class MenuContent extends Component {
 
     const drawer = (
       <div className='drawer'>
-        <div className={classes.toolbar}/>
+        <div className={classes.toolbar}>
+        <List dense>
+          <ListItem>
+            <ListItemIcon> 
+            <img src='favicon.gif' className={classes.logo}></img>
+            </ListItemIcon>
+            <ListItemText 
+              className={classes.drawerTitle}  
+              primary={
+                <WhiteTextTypography variant="title">
+                   LED Strip Controls
+                </WhiteTextTypography>
+              }/>
+          </ListItem>
+            </List>
+        </div>
         <Divider />
         <List>
           <ListItem 
             button 
+            selected={this.state.contentId === 'animations'}
             onClick={() => this.handleMenuButtonClick('animations')}
           >
             <ListItemIcon> 
               <WbIncandescentIcon className={classes.whiteIcon}/> 
             </ListItemIcon>
             <ListItemText primary={
-              <WhiteTextTypography variant="body">
+              <WhiteTextTypography variant="body" bold>
                 Animations
               </WhiteTextTypography>
-              }/>
+            }/>
           </ListItem>
   
           <ListItem 
             button 
+            selected={this.state.contentId === 'effects'}
             onClick={() => this.handleMenuButtonClick('effects')}
           >
             <ListItemIcon> 
@@ -221,10 +238,21 @@ class MenuContent extends Component {
           >
             <MenuIcon />
           </IconButton>
-            <Typography edge="start" variant="subtitle1" color="inherit" className={classes.title}>
+            <Typography 
+              edge="start" 
+              variant="subtitle1" 
+              color="inherit" 
+              className={classes.title}
+            >
               {this.visibleTitle()}
             </Typography>
-            <IconButton style={{backgroundColor: this.buttonColor()}} className={classes.powerButton} onClick={() => { this.togglePower() }}>
+            <IconButton 
+              size="small"
+              style={{
+                backgroundColor: this.buttonColor()
+              }} 
+              onClick={() => { this.togglePower() }}
+            >
               <PowerSettingsNewIcon className={classes.whiteIcon}/>
             </IconButton>
           </Toolbar>
@@ -268,5 +296,6 @@ class MenuContent extends Component {
     );
   }
 }
+
 
 export default withStyles(styles)(MenuContent);

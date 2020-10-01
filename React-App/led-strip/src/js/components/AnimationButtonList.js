@@ -8,13 +8,6 @@
 
 import React, { Component } from "react";
 import { Button, ButtonGroup } from '@material-ui/core';
-import { withStyles } from "@material-ui/core/styles";
-
-const styles = theme => ({
-  buttons: {
-    
-  }
-});
 
 class AnimationButtonList extends Component {
   constructor() {
@@ -54,7 +47,6 @@ class AnimationButtonList extends Component {
     return (
       <div>
         <ButtonGroup 
-          className = {classes.buttons}
           orientation="vertical" 
           color="primary" 
           variant="contained"
@@ -71,4 +63,4 @@ class AnimationButtonList extends Component {
   }
 }
 
-export default withStyles(styles)(AnimationButtonList);
+export default AnimationButtonList;
