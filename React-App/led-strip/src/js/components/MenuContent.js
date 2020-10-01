@@ -87,7 +87,7 @@ const styles = theme => ({
     width: '25px'
   }, 
   drawerTitle: {
-    marginTop: theme.spacing(1), 
+    marginTop: theme.spacing(1.5), 
     marginLeft: '-15px'
   }, 
 });
