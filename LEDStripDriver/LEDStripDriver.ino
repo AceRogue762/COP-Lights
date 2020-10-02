@@ -21,6 +21,7 @@
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
 #include <WiFiUdp.h>
+#include <ESPmDNS.h>
 #include <EEPROM.h>
 #include <SPIFFS.h>
 #include <WiFi.h>
@@ -118,7 +119,7 @@ void connectWifi() {
       }
     } else {
       return;
-    } 
+    }
   }
 
   Serial.print("IP Address: ");
@@ -126,9 +127,30 @@ void connectWifi() {
 
   strip.SetPixelColor(0, RgbColor(0, 255, 0));
   strip.Show();
+
+  // Optionally start mDNS responder
+  if (USE_MDNS)
+    startMDNS();
 }
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
+
+/*  *  *  *  *  *  *  *  *  *  * DNS  *  *  *  *  *  *  *  *  *  */
+
+/**
+ * Start the mDNS responder to allow browsing to [hostname].local
+ * rather than IP address
+ */
+void startMDNS()
+{
+  if (!MDNS.begin(HOSTNAME)) {
+    Serial.println("Error setting up mDNS responder");
+  }
+  
+  Serial.println("mDNS responder started");
+}
+
+/*  *  *  *  *  *  *  *  *  *  * DNS  *  *  *  *  *  *  *  *  *  */
 
 /*  *  *  *  *  *  *  *  *  *  * OTA  *  *  *  *  *  *  *  *  *  */
 
