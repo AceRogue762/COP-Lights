@@ -17,7 +17,6 @@
  * See animations.h for adding new animations.
  * 
  */
-
 #include <ESPAsyncWiFiManager.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
@@ -406,6 +405,7 @@ void handlePowerOff(AsyncWebServerRequest *request) {
 void handleSetEffect(AsyncWebServerRequest *request) {
   int params = request -> params();
 
+  String type;
   int r, g, b;
 
   // End the current animation task
@@ -417,6 +417,11 @@ void handleSetEffect(AsyncWebServerRequest *request) {
   // Parse request
   for(int i=0; i < params; i++) {
     AsyncWebParameter* parameter = request -> getParam(i);
+
+    if (parameter -> name() == "type") {
+      // Got effect type. Validate it.
+      type = parameter -> value();
+    }
 
     if (parameter -> name() == "r") {
       // Got red color component
