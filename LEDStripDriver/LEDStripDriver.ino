@@ -135,7 +135,7 @@ void connectWifi() {
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
 
-/*  *  *  *  *  *  *  *  *  *  * DNS  *  *  *  *  *  *  *  *  *  */
+/*  *  *  *  *  *  *  *  *  *  * mDNS *  *  *  *  *  *  *  *  *  */
 
 /**
  * Start the mDNS responder to allow browsing to [hostname].local
@@ -150,7 +150,7 @@ void startMDNS()
   Serial.println("mDNS responder started");
 }
 
-/*  *  *  *  *  *  *  *  *  *  * DNS  *  *  *  *  *  *  *  *  *  */
+/*  *  *  *  *  *  *  *  *  *  * mDNS *  *  *  *  *  *  *  *  *  */
 
 /*  *  *  *  *  *  *  *  *  *  * OTA  *  *  *  *  *  *  *  *  *  */
 
@@ -325,6 +325,27 @@ void handleNotFound(AsyncWebServerRequest *request) {
  */
 void handleWrongMethod(AsyncWebServerRequest *request) {
   String message = "405 Method Not Allowed\n\n";
+  message += "URI: ";
+  message += request -> url();
+  message += "\nMethod: ";
+  message += (request -> method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nParameters: ";
+  message += request -> params();
+  message += "\n";
+  
+  for (uint8_t i = 0; i < request -> params(); i++) {
+    AsyncWebParameter* param = request -> getParam(i);
+    message += " " + param -> name() + ": " + param -> value() + "\n";
+  }
+  
+  request -> send(405, "text/plain", message);
+}
+
+/**
+ * Returns a 403 "forbidden" error to the client
+ */
+void handleForbidden(AsyncWebServerRequest *request) {
+  String message = "403 Forbidden\n\n";
   message += "URI: ";
   message += request -> url();
   message += "\nMethod: ";
@@ -552,6 +573,7 @@ void handleGetAnimations(AsyncWebServerRequest *request) {
 /*  *  *  *  *  *  *  *  *  *  * Route Handlers *  *  *  *  *  *  *   */
 
 /*  *  *  *  *  *  *  *  *  *  * EEPROM *  *  *  *  *  *  *  *  *  *  */
+
 /*
  * Retrieve the ID of the last selected animation from EEPROM
  */

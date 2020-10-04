@@ -13,10 +13,10 @@
 #define EEPROM_SIZE 2
 
 // WiFi settings
-const char * HOSTNAME     = "LEDStrip";     // Network device name
-const uint8_t CONNECT_TIMEOUT = 5; // Timeout for connection (seconds)
-bool BLOCK_UNTIL_CONNECTED = true; // Whether to block execution until connected
-bool USE_MDNS = true;              // Whether to start mDNS responder
+const char * HOSTNAME = "LEDStrip"; // Network device name
+const uint8_t CONNECT_TIMEOUT = 5;  // Timeout for connection (seconds)
+bool BLOCK_UNTIL_CONNECTED = true;  // Whether to block execution until connected
+bool USE_MDNS = true;               // Whether to start mDNS responder
 
 // Web server settings
 bool CORS_ENABLED = true; // True value adds the Access-Control-Allow-Origin header
