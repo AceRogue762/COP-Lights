@@ -395,7 +395,7 @@ void rainyDay(void * pvParameters) {
       loopdirection = 0;
 
     strip.SetPixelColor(count, black);
-    
+
     if (loopdirection == 0) {
        int brightness = 25;
        int trailEnd = constrain(count - 25, START_LED, LED_COUNT);
@@ -424,4 +424,76 @@ void rainyDay(void * pvParameters) {
       delay(25);
     }
  }
+
+ /**
+  * The Yule Log Fire Animation
+  */
+ void yuleLog(void * pvParameters) {
+   (void) pvParameters;
+
+    // Setup
+    float brightness; // percentage, applied to the whole strip
+    int red, green;   // randomized red and green values
+    RgbColor color;
+
+    int lineSize = 10;
+    int nextCrackle, crackleCounter;
+    
+    // Spark the flame
+    for (int spark = 0; spark <= 2; spark++) {
+      for (int count = START_LED; count <= LED_COUNT / 2; count+= 10) {
+        strip.SetPixelColor(count, white);
+        strip.SetPixelColor(LED_COUNT - count, white);
+        strip.Show();
+      }
+
+      setAllPixels(black);
+      vTaskDelay(750 / portTICK_PERIOD_MS);
+    }
+
+    // Fade in the initial fire color
+    for (int brightness = 0; brightness <= 40; brightness++) {
+      setAllPixels(RgbColor(brightness, brightness / 2, 0));
+      strip.Show();
+      vTaskDelay(75 / portTICK_PERIOD_MS);
+    }
+
+    // Main animation loop
+    while (true) {
+      // Set random brightness for entire strip
+      brightness = random(60, 75) / 100.0;
+
+      // Pick a random red/orange color for each pixel
+      for (int count = START_LED; count <= LED_COUNT; count++) {
+        red = random(40, 75);
+        green = random(20, 30);      
+  
+        color = RgbColor(red * brightness, green * brightness, 0);
+        
+        strip.SetPixelColor(count, color);
+      }
+
+      // Crackle
+      if (crackleCounter >= nextCrackle) {
+        int crackleStart = random(START_LED, LED_COUNT - lineSize);
+
+        // Show the crackle animation
+        for (int count = crackleStart; count <= crackleStart + lineSize; count++) {
+          int crackleRed = random(70, 95);
+          int crackleYellow = random(25, 35);
+          strip.SetPixelColor(count, RgbColor(crackleRed, crackleYellow, 0));
+        }
+
+        // Reset counter and randomize next crackle time
+        crackleCounter = 0;
+        nextCrackle = random(2, 10);
+      }
+
+      strip.Show();
+      crackleCounter++;
+  
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+    }  
+  }
+
 #endif
