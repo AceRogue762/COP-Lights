@@ -33,6 +33,9 @@
 AsyncWebServer webServer(SERVER_PORT);
 DNSServer dnsServer;
 
+// Create websocket connection for color streams
+AsyncWebSocket socket("/api/stream");
+
 // Create the WiFiManager object
 AsyncWiFiManager wifiManager(&webServer, &dnsServer);
 
@@ -258,7 +261,12 @@ void startWebServer() {
   if (CORS_ENABLED) {
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   }
-    
+
+  // Set up the websocket endpoint
+  socket.onEvent(handleSocketEvent);
+  webServer.addHandler(&socket);
+
+  // Finally, start the configured web server
   webServer.onNotFound(handleNotFound);
   webServer.begin();
 
@@ -361,6 +369,32 @@ void handleForbidden(AsyncWebServerRequest *request) {
   
   request -> send(405, "text/plain", message);
 }
+
+/*  *  *  *  *  *  *  *  *  *  * Web Server *  *  *  *  *  *  *  *  * */
+
+/*  *  *  *  *  *  *  *  *  *  * Web Socket *  *  *  *  *  *  *  *  * */
+
+/**
+ * Handles all incoming messages over the websocket connection
+ */
+void handleSocketEvent(
+  AsyncWebSocket * server, 
+  AsyncWebSocketClient * client, 
+  AwsEventType type, 
+  void * arg, 
+  uint8_t *data, 
+  size_t len
+){
+  if(type == WS_EVT_CONNECT){
+    // Client connected
+    client->text("Hello from your kickass LED strip");
+  } else if(type == WS_EVT_DISCONNECT){
+    // Client disconnected
+    Serial.println("Client disconnected");
+  }
+}
+
+/*  *  *  *  *  *  *  *  *  *  * Web Socket *  *  *  *  *  *  *  *  * */
 
 /*  *  *  *  *  *  *  *  *  *  * Web Server *  *  *  *  *  *  *  *  * */
 
