@@ -17,11 +17,11 @@
  * See animations.h for adding new animations.
  * 
  */
-
 #include <ESPAsyncWiFiManager.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
 #include <WiFiUdp.h>
+#include <ESPmDNS.h>
 #include <EEPROM.h>
 #include <SPIFFS.h>
 #include <WiFi.h>
@@ -32,6 +32,9 @@
 // Create webserver and DNS server objects
 AsyncWebServer webServer(SERVER_PORT);
 DNSServer dnsServer;
+
+// Create websocket connection for color streams
+AsyncWebSocket socket("/api/stream");
 
 // Create the WiFiManager object
 AsyncWiFiManager wifiManager(&webServer, &dnsServer);
@@ -119,7 +122,7 @@ void connectWifi() {
       }
     } else {
       return;
-    } 
+    }
   }
 
   Serial.print("IP Address: ");
@@ -127,9 +130,30 @@ void connectWifi() {
 
   strip.SetPixelColor(0, RgbColor(0, 255, 0));
   strip.Show();
+
+  // Optionally start mDNS responder
+  if (USE_MDNS)
+    startMDNS();
 }
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
+
+/*  *  *  *  *  *  *  *  *  *  * mDNS *  *  *  *  *  *  *  *  *  */
+
+/**
+ * Start the mDNS responder to allow browsing to [hostname].local
+ * rather than IP address
+ */
+void startMDNS()
+{
+  if (!MDNS.begin(HOSTNAME)) {
+    Serial.println("Error setting up mDNS responder");
+  }
+  
+  Serial.println("mDNS responder started");
+}
+
+/*  *  *  *  *  *  *  *  *  *  * mDNS *  *  *  *  *  *  *  *  *  */
 
 /*  *  *  *  *  *  *  *  *  *  * OTA  *  *  *  *  *  *  *  *  *  */
 
@@ -237,7 +261,12 @@ void startWebServer() {
   if (CORS_ENABLED) {
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   }
-    
+
+  // Set up the websocket endpoint
+  socket.onEvent(handleSocketEvent);
+  webServer.addHandler(&socket);
+
+  // Finally, start the configured web server
   webServer.onNotFound(handleNotFound);
   webServer.begin();
 
@@ -319,6 +348,53 @@ void handleWrongMethod(AsyncWebServerRequest *request) {
   
   request -> send(405, "text/plain", message);
 }
+
+/**
+ * Returns a 403 "forbidden" error to the client
+ */
+void handleForbidden(AsyncWebServerRequest *request) {
+  String message = "403 Forbidden\n\n";
+  message += "URI: ";
+  message += request -> url();
+  message += "\nMethod: ";
+  message += (request -> method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nParameters: ";
+  message += request -> params();
+  message += "\n";
+  
+  for (uint8_t i = 0; i < request -> params(); i++) {
+    AsyncWebParameter* param = request -> getParam(i);
+    message += " " + param -> name() + ": " + param -> value() + "\n";
+  }
+  
+  request -> send(405, "text/plain", message);
+}
+
+/*  *  *  *  *  *  *  *  *  *  * Web Server *  *  *  *  *  *  *  *  * */
+
+/*  *  *  *  *  *  *  *  *  *  * Web Socket *  *  *  *  *  *  *  *  * */
+
+/**
+ * Handles all incoming messages over the websocket connection
+ */
+void handleSocketEvent(
+  AsyncWebSocket * server, 
+  AsyncWebSocketClient * client, 
+  AwsEventType type, 
+  void * arg, 
+  uint8_t *data, 
+  size_t len
+){
+  if(type == WS_EVT_CONNECT){
+    // Client connected
+    client->text("Hello from your kickass LED strip");
+  } else if(type == WS_EVT_DISCONNECT){
+    // Client disconnected
+    Serial.println("Client disconnected");
+  }
+}
+
+/*  *  *  *  *  *  *  *  *  *  * Web Socket *  *  *  *  *  *  *  *  * */
 
 /*  *  *  *  *  *  *  *  *  *  * Web Server *  *  *  *  *  *  *  *  * */
 
@@ -406,6 +482,7 @@ void handlePowerOff(AsyncWebServerRequest *request) {
 void handleSetEffect(AsyncWebServerRequest *request) {
   int params = request -> params();
 
+  String type;
   int r, g, b;
 
   // End the current animation task
@@ -417,6 +494,11 @@ void handleSetEffect(AsyncWebServerRequest *request) {
   // Parse request
   for(int i=0; i < params; i++) {
     AsyncWebParameter* parameter = request -> getParam(i);
+
+    if (parameter -> name() == "type") {
+      // Got effect type. Validate it.
+      type = parameter -> value();
+    }
 
     if (parameter -> name() == "r") {
       // Got red color component
@@ -525,6 +607,7 @@ void handleGetAnimations(AsyncWebServerRequest *request) {
 /*  *  *  *  *  *  *  *  *  *  * Route Handlers *  *  *  *  *  *  *   */
 
 /*  *  *  *  *  *  *  *  *  *  * EEPROM *  *  *  *  *  *  *  *  *  *  */
+
 /*
  * Retrieve the ID of the last selected animation from EEPROM
  */

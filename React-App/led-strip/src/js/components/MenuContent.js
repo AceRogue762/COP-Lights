@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import PaletteIcon from '@material-ui/icons/Palette';
 import WbIncandescentIcon from '@material-ui/icons/WbIncandescent';
+import CodeIcon from '@material-ui/icons/Code';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -24,16 +25,29 @@ import WhiteTextTypography from './WhiteTextTypography';
 // Import components
 import AnimationButtonList from "./AnimationButtonList";
 import EffectPicker from "./EffectPicker";
+import DevloperPage from "./DeveloperPage";
 
-// Map menu button id to content and title
+/**
+ * Map menu button id to:
+ * title: Text displayed in the menu selection item
+ * icon: Icon displayed next to the title
+ * content: Component that should be rendered upon selecting the button
+ */
 const contentMap = {
   'animations': {
-    content: <AnimationButtonList />, 
-    title: 'Animations'
+    title: 'Animations', 
+    icon: <WbIncandescentIcon />,
+    content: <AnimationButtonList />
   }, 
   'effects': {
-    content: <EffectPicker />, 
-    title: 'Effects'
+    title: 'Effects', 
+    icon: <PaletteIcon />, 
+    content: <EffectPicker />
+  }, 
+  'developer': {
+    title: 'Developer', 
+    icon: <CodeIcon />, 
+    content: <DevloperPage />
   }
 }
 
@@ -192,35 +206,28 @@ class MenuContent extends Component {
         </div>
         <Divider />
         <List>
-          <ListItem 
-            button 
-            selected={this.state.contentId === 'animations'}
-            onClick={() => this.handleMenuButtonClick('animations')}
-          >
-            <ListItemIcon> 
-              <WbIncandescentIcon className={classes.whiteIcon}/> 
-            </ListItemIcon>
-            <ListItemText primary={
-              <WhiteTextTypography variant="body" bold>
-                Animations
-              </WhiteTextTypography>
-            }/>
-          </ListItem>
-  
-          <ListItem 
-            button 
-            selected={this.state.contentId === 'effects'}
-            onClick={() => this.handleMenuButtonClick('effects')}
-          >
-            <ListItemIcon> 
-              <PaletteIcon className={classes.whiteIcon}/> 
-            </ListItemIcon>
-            <ListItemText primary={
-              <WhiteTextTypography variant="body">
-                Effects
-              </WhiteTextTypography>
-            } />
-          </ListItem>
+          { 
+          // Construct menu from content map
+          Object.keys(contentMap).map((id, i) =>
+            <div id={`${id}MenuItem`}>
+              <ListItem 
+                button 
+                selected={this.state.contentId === id}
+                onClick={() => this.handleMenuButtonClick(id)}
+              >
+                <ListItemIcon> 
+                  <div className={classes.whiteIcon}>
+                    {contentMap[id].icon}
+                  </div>
+                </ListItemIcon>
+                <ListItemText primary={
+                  <WhiteTextTypography variant="body">
+                    {contentMap[id].title}
+                  </WhiteTextTypography>
+                } />
+              </ListItem>
+            </div>
+          )}
         </List>
       </div>
     );
