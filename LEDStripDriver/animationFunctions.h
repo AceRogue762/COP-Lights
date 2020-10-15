@@ -496,4 +496,15 @@ void rainyDay(void * pvParameters) {
     }  
   }
 
+  /**
+ * Simulated thunderstorm with random rainfall and lightning
+ */
+void christmasFade(void * pvParameters) {
+  (void) pvParameters;
+
+  while (true) {
+
+    }
+  }
+
 #endif
