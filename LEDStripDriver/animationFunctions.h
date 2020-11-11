@@ -505,7 +505,7 @@ void christmasCane(void * pvParameters) {
   for (int count = START_LED; count <= LED_COUNT; count++) {
     strip.SetPixelColor(count, red);
     strip.Show();
-    vTaskDelay(50 / portTICK_PERIOD_MS);
+    vTaskDelay(25 / portTICK_PERIOD_MS);
   }
 
   while (true) {
