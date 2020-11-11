@@ -46,7 +46,7 @@ AsyncWiFiManager wifiManager(&webServer, &dnsServer);
 TaskHandle_t currentTaskHandler = NULL;
 
 // This device's broadcasted MAC address
-uint8_t broadcastAddress[] = {0xA8, 0x68, 0xA1, 0xDD, 0x30, 0x11};
+uint8_t broadcastAddress[] = {0xAC, 0x67, 0xB2, 0x2A, 0x7A, 0x84};
 
 // The audio extension's MAC address
 uint8_t audioAddress[] = {0x2F, 0x0E, 0xAC, 0x2B, 0x3C, 0x8F};
@@ -143,6 +143,9 @@ void connectWifi() {
 
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
+  
+  Serial.print("MAC Address: ");
+  Serial.println(WiFi.macAddress());
 
   strip.SetPixelColor(0, RgbColor(0, 255, 0));
   strip.Show();
