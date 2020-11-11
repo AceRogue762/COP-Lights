@@ -502,15 +502,52 @@ void rainyDay(void * pvParameters) {
 void christmasCane(void * pvParameters) {
   (void) pvParameters;
 
-  for (int count = START_LED; count <= LED_COUNT; count++) {
+  // Current pixel being changed
+  int pixelIndex = START_LED;
+
+  // Whether to set red or green first
+  bool swapped = true;
+  
+  // Index for middle pixel
+  int median = (LED_COUNT + START_LED) / 2;
+  int lineSize = 36; 
+
+  // Startup animation
+  // Red Line Out
+  for (int count = START_LED; count <= median; count++) {
     strip.SetPixelColor(count, red);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
     strip.Show();
-    vTaskDelay(25 / portTICK_PERIOD_MS);
   }
 
+  // Green Line Out
+  for (int count = median; count <= LED_COUNT; count++) {
+    strip.SetPixelColor(count, green);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    strip.Show();
+  } 
+
+      setAllPixels(black);
+      pixelIndex = START_LED;
+
   while (true) {
+    static RgbColor firstColor;
+    static RgbColor secondColor;
 
     }
+
+        // Calculate the end of each line, constrain to within bounds of the strip
+    int gLineEnd = constrain(pixelIndex - lineSize / 2, START_LED, median - lineSize / 2);
+    int rLineEnd = constrain(LED_COUNT - pixelIndex + lineSize / 2, START_LED, LED_COUNT);
+
+    // Update pixels
+    strip.SetPixelColor(pixelIndex, green);
+    strip.SetPixelColor(LED_COUNT - pixelIndex, red);
+    strip.SetPixelColor(gLineEnd, black);
+    strip.SetPixelColor(rLineEnd, black);
+    
+    strip.Show();
+    pixelIndex++;
   }
 
 #endif
