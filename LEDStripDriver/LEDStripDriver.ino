@@ -119,6 +119,9 @@ void configModeCallback (AsyncWiFiManager *wifiManager) {
  * If there is no network configured, an access point is created.
  */
 void connectWifi() {
+  // Set custom MAC address
+  esp_wifi_set_mac(ESP_IF_WIFI_STA, &broadcastAddress[0]);
+  
   wifiManager.setAPCallback(configModeCallback);
 
   if (!wifiManager.autoConnect()) {
@@ -143,9 +146,6 @@ void connectWifi() {
       return;
     }
   }
-
-  // Set custom MAC address
-  esp_wifi_set_mac(ESP_IF_WIFI_STA, &broadcastAddress[0]);
 
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
@@ -775,7 +775,7 @@ void setup() {
   connectWifi();
 
   // Initialize ESPNow
-  //initESPNow();
+  initESPNow();
 
   // Set up OTA updates
   startOTA();
