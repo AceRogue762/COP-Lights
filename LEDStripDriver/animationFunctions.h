@@ -497,15 +497,15 @@ void rainyDay(void * pvParameters) {
   }
 
   /**
- * Simulated thunderstorm with random rainfall and lightning
+ * Animated Candy Cane Colors
  */
-void christmasFade(void * pvParameters) {
+void christmasCane(void * pvParameters) {
   (void) pvParameters;
 
   for (int count = START_LED; count <= LED_COUNT; count++) {
     strip.SetPixelColor(count, red);
     strip.Show();
-    vTaskDelay(75 / portTICK_PERIOD_MS);
+    vTaskDelay(50 / portTICK_PERIOD_MS);
   }
 
   while (true) {
