@@ -189,7 +189,7 @@ void copLightsLineOut(void * pvParameters) {
       int NegCount = median;
       
       for (int count = median; count > median - lineSize / 2; count--) { 
-        strip.SetPixelColor(count, white);
+        strip.SetPixelColor(count - 1, white);
         strip.SetPixelColor(NegCount, white);
         strip.Show();
         NegCount++;
@@ -495,5 +495,83 @@ void rainyDay(void * pvParameters) {
       vTaskDelay(100 / portTICK_PERIOD_MS);
     }  
   }
+
+/**
+ * Simulated thunderstorm with random rainfall and lightning
+ */
+void christmasFade(void * pvParameters) {
+  (void) pvParameters;
+
+  const RgbColor snowWhite = RgbColor(30, 30, 30);
+
+  // Current pixel being changed
+  int pixelIndex = START_LED;
+
+  // Whether to set red or green first
+  bool swapped = true;
+  
+  // Index for middle pixel
+  int median = (LED_COUNT + START_LED) / 2;
+  int lineSize = 36; 
+
+  // Startup animation
+  // Red Line Out
+  for (int count = START_LED; count <= median; count++) {
+    strip.SetPixelColor(count, red);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    strip.Show();
+  }
+
+  // Green Line Out
+  for (int count = median; count <= LED_COUNT; count++) {
+    strip.SetPixelColor(count, green);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    strip.Show();
+  } 
+
+  setAllPixels(black);
+  pixelIndex = START_LED;
+
+  while (true) {
+    // Calculate the end of each line, constrain to within bounds of the strip
+    if (pixelIndex >= LED_COUNT) {
+      pixelIndex = 0;
+      swapped = !swapped;
+    }
+
+    int gLineEnd = pixelIndex - lineSize;
+    int rLineEnd = LED_COUNT - pixelIndex + lineSize;
+
+    // Update pixels
+    strip.SetPixelColor(pixelIndex, green);
+    strip.SetPixelColor(LED_COUNT - pixelIndex, red);
+
+    if (swapped) {
+      strip.SetPixelColor(gLineEnd, snowWhite);
+      strip.SetPixelColor(rLineEnd, snowWhite);
+    } else {
+      strip.SetPixelColor(gLineEnd, black);
+      strip.SetPixelColor(rLineEnd, black);
+    }
+    
+    strip.Show();
+    pixelIndex++;
+  }
+}
+
+/**
+ * Music reactive EQ animation.
+ * Uses audio data stream received from the microphone extension.
+ */
+void audioEQ(void * pvParameters) {
+  (void) pvParameters;
+
+  while (true) {
+    int bass = currentFFT.FFTBands[7];
+    int level = map(bass, 0, 12, 0, 200);
+
+    setAllPixels(RgbColor(level, 0, 0));
+  }
+}
 
 #endif

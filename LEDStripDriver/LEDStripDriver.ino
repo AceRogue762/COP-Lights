@@ -20,13 +20,16 @@
 #include <ESPAsyncWiFiManager.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
+#include <esp_wifi.h>
 #include <WiFiUdp.h>
 #include <ESPmDNS.h>
+#include <esp_now.h>
 #include <EEPROM.h>
 #include <SPIFFS.h>
 #include <WiFi.h>
 
 #include "config.h"
+#include "espnow.h"
 #include "animations.h"
 
 // Create webserver and DNS server objects
@@ -41,6 +44,16 @@ AsyncWiFiManager wifiManager(&webServer, &dnsServer);
 
 // Task handler for animation
 TaskHandle_t currentTaskHandler = NULL;
+
+// This device's broadcasted MAC address
+uint8_t broadcastAddress[] = {0xAC, 0x67, 0xB2, 0x2A, 0x7A, 0x84};
+
+// The audio extension's MAC address
+uint8_t audioAddress[] = {0x2F, 0x0E, 0xAC, 0x2B, 0x3C, 0x8F};
+
+// Global copy of audio device connection and pair status
+esp_now_peer_info_t audioextension;
+bool audioPaired = false;
 
 /*  *  *  *  *  *  *  *  *  * System Status *  *  *  *  *  *  *  */
 
@@ -100,6 +113,9 @@ void configModeCallback (AsyncWiFiManager *wifiManager) {
  * If there is no network configured, an access point is created.
  */
 void connectWifi() {
+  // Set custom MAC address
+  esp_wifi_set_mac(ESP_IF_WIFI_STA, &broadcastAddress[0]);
+  
   wifiManager.setAPCallback(configModeCallback);
 
   if (!wifiManager.autoConnect()) {
@@ -127,6 +143,9 @@ void connectWifi() {
 
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
+  
+  Serial.print("MAC Address: ");
+  Serial.println(WiFi.macAddress());
 
   strip.SetPixelColor(0, RgbColor(0, 255, 0));
   strip.Show();
@@ -137,6 +156,39 @@ void connectWifi() {
 }
 
 /*  *  *  *  *  *  *  *  *  *  * WiFi *  *  *  *  *  *  *  *  *  */
+
+/*  *  *  *  *  *  *  *  *  *  * ESPNow *  *  *  *  *  *  *  *   */
+
+// Initialize ESPNow with fallback
+void initESPNow() {
+  if (esp_now_init() == ESP_OK) {
+    Serial.println("ESPNow initialized");
+  } else {
+    Serial.println("ESPNow initialization failed. Retrying.");
+    ESP.restart();
+  }
+
+  // Register send and receive callbacks
+  esp_now_register_recv_cb(onDataReceived);
+  esp_now_register_send_cb(onDataSent);
+}
+
+// ESPNow data received callback
+void onDataReceived(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
+  memcpy(&currentFFT, data, sizeof(currentFFT));
+
+  for (int i = 0; i < 8; i++) {
+    Serial.println(currentFFT.FFTBands[i]);
+  }
+}
+
+// ESPNow data send callback
+void onDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  Serial.print("\r\nLast Packet Send Status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
+/*  *  *  *  *  *  *  *  *  *  * ESPNow *  *  *  *  *  *  *  *   */
 
 /*  *  *  *  *  *  *  *  *  *  * mDNS *  *  *  *  *  *  *  *  *  */
 
@@ -718,6 +770,9 @@ void setup() {
   
   // Connect to WiFi
   connectWifi();
+
+  // Initialize ESPNow
+  initESPNow();
 
   // Set up OTA updates
   startOTA();
