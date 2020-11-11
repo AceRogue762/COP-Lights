@@ -189,7 +189,7 @@ void copLightsLineOut(void * pvParameters) {
       int NegCount = median;
       
       for (int count = median; count > median - lineSize / 2; count--) { 
-        strip.SetPixelColor(count, white);
+        strip.SetPixelColor(count - 1, white);
         strip.SetPixelColor(NegCount, white);
         strip.Show();
         NegCount++;
@@ -501,6 +501,12 @@ void rainyDay(void * pvParameters) {
  */
 void christmasFade(void * pvParameters) {
   (void) pvParameters;
+
+  for (int count = START_LED; count <= LED_COUNT; count++) {
+    strip.SetPixelColor(count, red);
+    strip.Show();
+    vTaskDelay(75 / portTICK_PERIOD_MS);
+  }
 
   while (true) {
 
