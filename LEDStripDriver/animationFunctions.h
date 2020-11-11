@@ -529,13 +529,15 @@ void christmasFade(void * pvParameters) {
     strip.Show();
   } 
 
-  setAllPixels(snowWhite);
+  setAllPixels(black);
   pixelIndex = START_LED;
 
   while (true) {
     // Calculate the end of each line, constrain to within bounds of the strip
-    //int gLineEnd = constrain(pixelIndex - lineSize / 2, START_LED, median - lineSize / 2);
-    //int rLineEnd = constrain(LED_COUNT - pixelIndex + lineSize / 2, START_LED, LED_COUNT);
+    if (pixelIndex >= LED_COUNT) {
+      pixelIndex = 0;
+      swapped = !swapped;
+    }
 
     int gLineEnd = pixelIndex - lineSize;
     int rLineEnd = LED_COUNT - pixelIndex + lineSize;
@@ -543,8 +545,14 @@ void christmasFade(void * pvParameters) {
     // Update pixels
     strip.SetPixelColor(pixelIndex, green);
     strip.SetPixelColor(LED_COUNT - pixelIndex, red);
-    strip.SetPixelColor(gLineEnd, snowWhite);
-    strip.SetPixelColor(rLineEnd, snowWhite);
+
+    if (swapped) {
+      strip.SetPixelColor(gLineEnd, snowWhite);
+      strip.SetPixelColor(rLineEnd, snowWhite);
+    } else {
+      strip.SetPixelColor(gLineEnd, black);
+      strip.SetPixelColor(rLineEnd, black);
+    }
     
     strip.Show();
     pixelIndex++;

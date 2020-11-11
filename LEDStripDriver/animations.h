@@ -28,7 +28,7 @@ animationTableEntry animationTable[] =
   { 1, "Christmas Red Green Dance", &christmasRGDance     },
   { 2, "Cop Lights Alternating",    &copLightsAlternating },
   { 3, "Cop Lights Line Out",       &copLightsLineOut     },
-  { 4, "Christmas Cane",            &christmasFade        },
+  { 4, "Christmas Loop",            &christmasFade        },
   { 5, "Cop Lights Mix",            &copLightsMix         },
   { 6, "MelloYello",                &melloYello           },
   { 7, "Halloween",                 &halloweenOrange      },
