@@ -502,6 +502,8 @@ void rainyDay(void * pvParameters) {
 void christmasFade(void * pvParameters) {
   (void) pvParameters;
 
+  const RgbColor snowWhite = RgbColor(30, 30, 30);
+
   // Current pixel being changed
   int pixelIndex = START_LED;
 
@@ -527,22 +529,22 @@ void christmasFade(void * pvParameters) {
     strip.Show();
   } 
 
-  setAllPixels(black);
+  setAllPixels(snowWhite);
   pixelIndex = START_LED;
 
   while (true) {
-    static RgbColor firstColor;
-    static RgbColor secondColor;
-
     // Calculate the end of each line, constrain to within bounds of the strip
-    int gLineEnd = constrain(pixelIndex - lineSize / 2, START_LED, median - lineSize / 2);
-    int rLineEnd = constrain(LED_COUNT - pixelIndex + lineSize / 2, START_LED, LED_COUNT);
+    //int gLineEnd = constrain(pixelIndex - lineSize / 2, START_LED, median - lineSize / 2);
+    //int rLineEnd = constrain(LED_COUNT - pixelIndex + lineSize / 2, START_LED, LED_COUNT);
+
+    int gLineEnd = pixelIndex - lineSize;
+    int rLineEnd = LED_COUNT - pixelIndex + lineSize;
 
     // Update pixels
     strip.SetPixelColor(pixelIndex, green);
     strip.SetPixelColor(LED_COUNT - pixelIndex, red);
-    strip.SetPixelColor(gLineEnd, black);
-    strip.SetPixelColor(rLineEnd, black);
+    strip.SetPixelColor(gLineEnd, snowWhite);
+    strip.SetPixelColor(rLineEnd, snowWhite);
     
     strip.Show();
     pixelIndex++;
@@ -557,7 +559,10 @@ void audioEQ(void * pvParameters) {
   (void) pvParameters;
 
   while (true) {
-    int bass = currentFFT.FFTBands[0];
+    int bass = currentFFT.FFTBands[7];
+    int level = map(bass, 0, 12, 0, 200);
+
+    setAllPixels(RgbColor(level, 0, 0));
   }
 }
 

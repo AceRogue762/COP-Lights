@@ -22,7 +22,6 @@ typedef struct animationTableEntry {
   void (*handler)(void *); // handler function
 } animationTableEntry;
 
-
 // Animation mapping table. Add new animations here.
 animationTableEntry animationTable[] =
 { 

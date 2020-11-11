@@ -32,7 +32,7 @@ int bands[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 uint8_t broadcastAddress[] = {0x2F, 0x0E, 0xAC, 0x2B, 0x3C, 0x8F};
 
 // The LED controller's ESPNow address
-uint8_t controllerAddress[] = {0xA8, 0x68, 0xA1, 0xDD, 0x30, 0x11};
+uint8_t controllerAddress[] = {0xAC, 0x67, 0xB2, 0x2A, 0x7A, 0x84};
 
 // Global copy of controller connection and pair status
 bool controllerPaired = false;
@@ -171,11 +171,16 @@ void loop() {
   // Send the result to the controller
   memcpy(currentFFT.FFTBands, bands, 8*sizeof(int));
   esp_err_t result = esp_now_send(controllerAddress, (uint8_t *) &currentFFT, sizeof(currentFFT));
-  
+
+  /*
   if (result == ESP_OK) {
     Serial.println("Sent with success");
   } else {
     Serial.println("Error sending the data");
+  }*/
+
+  for (int i = 0; i < 8; i++) {
+    Serial.println(bands[i]);
   }
 
   delay(20);
