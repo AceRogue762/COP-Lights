@@ -171,7 +171,7 @@ void loop() {
   // Send the result to the controller
   memcpy(currentFFT.FFTBands, bands, 8*sizeof(int));
   esp_err_t result = esp_now_send(controllerAddress, (uint8_t *) &currentFFT, sizeof(currentFFT));
-  
+
   if (result == ESP_OK) {
     Serial.println("Sent with success");
   } else {
