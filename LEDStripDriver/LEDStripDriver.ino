@@ -775,7 +775,7 @@ void setup() {
   connectWifi();
 
   // Initialize ESPNow
-  initESPNow();
+  //initESPNow();
 
   // Set up OTA updates
   startOTA();
