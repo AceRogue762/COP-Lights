@@ -497,20 +497,32 @@ void rainyDay(void * pvParameters) {
   }
 
   /**
- * Animated Candy Cane Colors
+ * Simulated thunderstorm with random rainfall and lightning
  */
-void christmasCane(void * pvParameters) {
+void christmasFade(void * pvParameters) {
   (void) pvParameters;
 
   for (int count = START_LED; count <= LED_COUNT; count++) {
     strip.SetPixelColor(count, red);
     strip.Show();
-    vTaskDelay(50 / portTICK_PERIOD_MS);
+    vTaskDelay(75 / portTICK_PERIOD_MS);
   }
 
   while (true) {
 
     }
   }
+
+/**
+ * Music reactive EQ animation.
+ * Uses audio data stream received from the microphone extension.
+ */
+void audioEQ(void * pvParameters) {
+  (void) pvParameters;
+
+  while (true) {
+    int bass = currentFFT.FFTBands[0];
+  }
+}
 
 #endif

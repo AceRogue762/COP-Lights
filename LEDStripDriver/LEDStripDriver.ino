@@ -29,6 +29,7 @@
 #include <WiFi.h>
 
 #include "config.h"
+#include "espnow.h"
 #include "animations.h"
 
 // Create webserver and DNS server objects
@@ -53,13 +54,6 @@ uint8_t audioAddress[] = {0x2F, 0x0E, 0xAC, 0x2B, 0x3C, 0x8F};
 // Global copy of audio device connection and pair status
 esp_now_peer_info_t audioextension;
 bool audioPaired = false;
-
-// Wrapper for a single message received from the controller
-typedef struct message {
-  int FFTBands[8]; // Frequency band values (0 - 12)
-} message;
-
-message currentFFT;
 
 /*  *  *  *  *  *  *  *  *  * System Status *  *  *  *  *  *  *  */
 

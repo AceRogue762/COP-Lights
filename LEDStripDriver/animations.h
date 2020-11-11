@@ -28,13 +28,14 @@ animationTableEntry animationTable[] =
 { 
   { 1, "Christmas Red Green Dance", &christmasRGDance     },
   { 2, "Cop Lights Alternating",    &copLightsAlternating },
-  { 3, "Cop Lights Line Out",       &copLightsLineOut },
-  { 4, "Christmas Cane",            &christmasCane },
-  { 5, "Cop Lights Mix",            &copLightsMix },
-  { 6, "MelloYello",                &melloYello },
-  { 7, "Halloween",                 &halloweenOrange },
-  { 8, "Rainy Day",                 &rainyDay },
-  { 9, "Yule Log",                  &yuleLog },
+  { 3, "Cop Lights Line Out",       &copLightsLineOut     },
+  { 4, "Christmas Fade",            &christmasFade        },
+  { 5, "Cop Lights Mix",            &copLightsMix         },
+  { 6, "MelloYello",                &melloYello           },
+  { 7, "Halloween",                 &halloweenOrange      },
+  { 8, "Rainy Day",                 &rainyDay             },
+  { 9, "Audio EQ",                  &audioEQ              },
+  { 10,"Yule Log",                  &yuleLog              },
   { NULL }
 };
 
