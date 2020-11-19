@@ -33,8 +33,8 @@ animationTableEntry animationTable[] =
   { 6, "MelloYello",                &melloYello           },
   { 7, "Halloween",                 &halloweenOrange      },
   { 8, "Rainy Day",                 &rainyDay             },
-  { 9, "Audio EQ",                  &audioEQ              },
-  { 10,"Yule Log",                  &yuleLog              },
+  { 9, "Yule Log",                  &yuleLog              },
+  { 10,"Audio EQ",                  &audioEQ              },
   { NULL }
 };
 

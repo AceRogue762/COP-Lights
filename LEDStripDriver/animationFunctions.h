@@ -535,12 +535,12 @@ void christmasFade(void * pvParameters) {
   while (true) {
     // Calculate the end of each line, constrain to within bounds of the strip
     if (pixelIndex >= LED_COUNT) {
-      pixelIndex = 0;
+      pixelIndex = START_LED;
       swapped = !swapped;
     }
 
-    int gLineEnd = pixelIndex - lineSize;
-    int rLineEnd = LED_COUNT - pixelIndex + lineSize;
+    int gLineEnd = constrain(pixelIndex - lineSize, START_LED, LED_COUNT);
+    int rLineEnd = constrain(LED_COUNT - pixelIndex + lineSize, START_LED, LED_COUNT);
 
     // Update pixels
     strip.SetPixelColor(pixelIndex, green);
