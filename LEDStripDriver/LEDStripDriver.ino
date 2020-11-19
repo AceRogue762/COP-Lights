@@ -17,6 +17,7 @@
  * See animations.h for adding new animations.
  * 
  */
+ 
 #include <ESPAsyncWiFiManager.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoOTA.h>
@@ -448,7 +449,7 @@ void handleSocketEvent(
 
 /*  *  *  *  *  *  *  *  *  *  * Web Socket *  *  *  *  *  *  *  *  * */
 
-/*  *  *  *  *  *  *  *  *  *  * Web Server *  *  *  *  *  *  *  *  * */
+/*  *  *  *  *  *  *  *  *  *  * Web Socket *  *  *  *  *  *  *  *  * */
 
 /*  *  *  *  *  *  *  *   *  Route Handlers *  *  *  *  *  *  *  *   */
 
