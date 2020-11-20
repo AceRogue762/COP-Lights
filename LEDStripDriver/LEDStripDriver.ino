@@ -119,7 +119,7 @@ void connectWifi() {
   
   wifiManager.setAPCallback(configModeCallback);
 
-  if (!wifiManager.autoConnect()) {
+  if (!wifiManager.autoConnect(HOSTNAME)) {
     // Set status LED to red
     strip.SetPixelColor(0, RgbColor(255, 0, 0));
     strip.Show();
@@ -133,7 +133,7 @@ void connectWifi() {
       
       delay(CONNECT_TIMEOUT * 1000);
       
-      while (!wifiManager.autoConnect()) {
+      while (!wifiManager.autoConnect(HOSTNAME)) {
         Serial.println("Retrying...");
         delay(CONNECT_TIMEOUT * 1000); 
       }
@@ -330,8 +330,6 @@ void startWebServer() {
  * Validates all incoming requests, and decides which handler to call
  */
 void handleRequest(AsyncWebServerRequest *request) {
-  digitalWrite(LED_BUILTIN, 1);
-
   String endpoint = request -> url();
   struct endpointTableEntry *thisEndpointEntry = endpointTable;
 
@@ -350,8 +348,6 @@ void handleRequest(AsyncWebServerRequest *request) {
 
   // Endpoint does not exist
   handleNotFound(request);
-
-  digitalWrite(LED_BUILTIN, 0);
 }
 
 /**
@@ -688,7 +684,16 @@ void initEEPROMAndGetLastAnimation() {
  * save its id to flash memory
  */
 void setCurrentAnimation(unsigned short int animationId) {
-  if (animationId < 1) {
+  // Find the last animation ID in the table
+  int maxId = 0;
+  struct animationTableEntry *thisAnimationEntry = animationTable;
+
+  for ( ; thisAnimationEntry -> id != NULL ; thisAnimationEntry++ ) {
+    maxId = thisAnimationEntry -> id;
+  }   
+
+  // Validate the animation ID
+  if (animationId < 1 || animationId > maxId) {
     Serial.println("Invalid animation ID. Ignoring.");
     return;
   }
